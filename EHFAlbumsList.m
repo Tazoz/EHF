@@ -23,6 +23,7 @@
 EHFDataStore *data;
 EHFFacebookUtility *fu;
 UIRefreshControl *refreshControl;
+NSDateFormatter *formatter;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -44,20 +45,21 @@ UIRefreshControl *refreshControl;
     }
     
     refreshControl = [[UIRefreshControl alloc] init];
+    formatter = [[NSDateFormatter alloc] init];
+    
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Pull to refresh"]];
     [refreshControl addTarget:self action:@selector(refreshAlbumList) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
 }
 
 -(void)refreshAlbumList{
+    [formatter setDateFormat:@"MMM d, HH:mm"];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]]];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reloadTableValues)
                                                  name:@"FBComplete"
                                                object:nil];
     [fu sendAlbumsRequest];
-    
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"MMM d, HH:mm"];
-    //refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]]];
 }
 
 -(void)reloadTableValues{
@@ -108,13 +110,13 @@ UIRefreshControl *refreshControl;
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     __block EHFPhotoCollection *pc;
-
-   if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
-       UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection" message:@"\nNo network connection to access photos." delegate:self cancelButtonTitle:@"Back" otherButtonTitles:nil];
+    
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+        UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection" message:@"\nNo network connection to access photos." delegate:self cancelButtonTitle:@"Back" otherButtonTitles:nil];
         [myAlert show];
         
     } else {
-                UIAlertView *alert;
+        UIAlertView *alert;
         [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
         alert = [[UIAlertView alloc] initWithTitle:@"Retrieving Photos From Network\nPlease Wait..." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
         [alert show];
