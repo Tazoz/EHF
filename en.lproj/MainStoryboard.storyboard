@@ -7,7 +7,7 @@
         <!--Event List - Event List-->
         <scene sceneID="xtT-zM-K6z">
             <objects>
-                <tableViewController title="Event List" id="4tH-Oh-LPJ" customClass="EHFEventList" sceneMemberID="viewController">
+                <tableViewController title="Event List" modalTransitionStyle="crossDissolve" id="4tH-Oh-LPJ" customClass="EHFEventList" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="black" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="2Kq-ej-yuq">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -74,7 +74,7 @@
         <!--Table View Controller - Products-->
         <scene sceneID="x7U-qm-rOu">
             <objects>
-                <tableViewController id="35o-CR-Q3I" sceneMemberID="viewController">
+                <tableViewController modalTransitionStyle="crossDissolve" id="35o-CR-Q3I" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="IpB-Yh-wJV">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -118,7 +118,7 @@
         <!--About - About-->
         <scene sceneID="6Rs-Sb-oiv">
             <objects>
-                <viewController id="bZQ-5Z-45c" customClass="EHFAbout" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="crossDissolve" id="bZQ-5Z-45c" customClass="EHFAbout" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="q24-0a-xgl">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -231,7 +231,7 @@
         <!--Contact - Contact-->
         <scene sceneID="cjH-dt-wxP">
             <objects>
-                <viewController title="Contact" id="kgO-7u-HE5" customClass="EHFContact" sceneMemberID="viewController">
+                <viewController autoresizesArchivedViewToFullSize="NO" title="Contact" modalTransitionStyle="crossDissolve" id="kgO-7u-HE5" customClass="EHFContact" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="lp2-5B-LvU">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -244,15 +244,11 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Address:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="afM-qw-pKR">
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ulm-ap-wEX">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ulm-ap-wEX">
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" none="YES" notEnabled="YES"/>
+                                    <bool key="isElement" value="NO"/>
                                 </accessibility>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="63" id="5i1-FV-OXX"/>
@@ -260,19 +256,13 @@
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
                                 <dataDetectorType key="dataDetectorTypes" address="YES"/>
                             </textView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Phone:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yFA-iy-v4e">
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pzz-B7-Gjs">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" indicatorStyle="black" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pzz-B7-Gjs">
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="29" id="obo-Oj-eYI"/>
-                                    <constraint firstAttribute="width" constant="207" id="xg8-px-DnI"/>
                                 </constraints>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -280,15 +270,10 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                 <dataDetectorType key="dataDetectorTypes" phoneNumber="YES"/>
                             </textView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Website:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7GD-Yw-xNw">
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KIR-Oa-eZz">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KIR-Oa-eZz">
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="29" id="9p2-sp-W3d"/>
+                                    <constraint firstAttribute="height" constant="65" id="Fx7-gn-yJJ"/>
                                 </constraints>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -299,25 +284,18 @@
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="yFA-iy-v4e" firstAttribute="leading" secondItem="lp2-5B-LvU" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="6fG-5r-Ia5"/>
-                            <constraint firstAttribute="trailing" secondItem="yFA-iy-v4e" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="9YU-w2-U3n"/>
-                            <constraint firstAttribute="bottom" secondItem="KIR-Oa-eZz" secondAttribute="bottom" constant="51" id="An1-Em-lPz"/>
                             <constraint firstAttribute="trailing" secondItem="YGd-bS-hDJ" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="FKN-SO-jO6"/>
-                            <constraint firstAttribute="bottom" secondItem="Ulm-ap-wEX" secondAttribute="bottom" constant="130" id="L6C-eY-67S"/>
-                            <constraint firstItem="afM-qw-pKR" firstAttribute="leading" secondItem="lp2-5B-LvU" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="N4C-pX-4AJ"/>
                             <constraint firstItem="YGd-bS-hDJ" firstAttribute="leading" secondItem="lp2-5B-LvU" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="N6p-lh-uIo"/>
-                            <constraint firstItem="yFA-iy-v4e" firstAttribute="top" secondItem="lp2-5B-LvU" secondAttribute="top" constant="243" id="NTc-Jf-YEd"/>
                             <constraint firstItem="KIR-Oa-eZz" firstAttribute="leading" secondItem="lp2-5B-LvU" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="R1c-eh-6dj"/>
-                            <constraint firstItem="KIR-Oa-eZz" firstAttribute="top" secondItem="7GD-Yw-xNw" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="VmE-Tq-qDB"/>
-                            <constraint firstItem="pzz-B7-Gjs" firstAttribute="top" secondItem="lp2-5B-LvU" secondAttribute="top" constant="237" id="WGB-G2-fJb"/>
-                            <constraint firstItem="7GD-Yw-xNw" firstAttribute="leading" secondItem="lp2-5B-LvU" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="b5J-Y4-gc3"/>
+                            <constraint firstItem="YGd-bS-hDJ" firstAttribute="top" secondItem="lp2-5B-LvU" secondAttribute="top" constant="205" id="Xfy-nb-BPf"/>
+                            <constraint firstItem="KIR-Oa-eZz" firstAttribute="top" secondItem="Ulm-ap-wEX" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="Zns-AE-lBH"/>
+                            <constraint firstItem="pzz-B7-Gjs" firstAttribute="leading" secondItem="lp2-5B-LvU" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="byj-fV-0PW"/>
                             <constraint firstAttribute="trailing" secondItem="pzz-B7-Gjs" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="byt-Q3-gJb"/>
+                            <constraint firstItem="pzz-B7-Gjs" firstAttribute="top" secondItem="lp2-5B-LvU" secondAttribute="top" constant="235" id="dMU-Ix-RUp"/>
+                            <constraint firstItem="Ulm-ap-wEX" firstAttribute="top" secondItem="pzz-B7-Gjs" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="dgB-hc-THe"/>
                             <constraint firstAttribute="trailing" secondItem="Ulm-ap-wEX" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="eZb-aW-Oum"/>
-                            <constraint firstAttribute="trailing" secondItem="7GD-Yw-xNw" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="eoa-4k-Zi0"/>
                             <constraint firstItem="Ulm-ap-wEX" firstAttribute="leading" secondItem="lp2-5B-LvU" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="f0f-me-G4t"/>
-                            <constraint firstItem="Ulm-ap-wEX" firstAttribute="top" secondItem="afM-qw-pKR" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="rZa-Q3-2li"/>
-                            <constraint firstItem="YGd-bS-hDJ" firstAttribute="top" secondItem="lp2-5B-LvU" secondAttribute="top" constant="188" id="uDD-kv-aR9"/>
-                            <constraint firstAttribute="trailing" secondItem="afM-qw-pKR" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="umm-s0-wFm"/>
+                            <constraint firstItem="YGd-bS-hDJ" firstAttribute="top" relation="greaterThanOrEqual" secondItem="lp2-5B-LvU" secondAttribute="top" constant="205" type="user" id="uDD-kv-aR9"/>
                             <constraint firstAttribute="trailing" secondItem="KIR-Oa-eZz" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="wky-b6-8l3"/>
                         </constraints>
                     </view>
@@ -325,6 +303,7 @@
                         <barButtonItem key="backBarButtonItem" title="Back" id="jOp-lT-7Ib"/>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="txtAddress" destination="Ulm-ap-wEX" id="gUz-pk-Dwi"/>
                         <outlet property="txtName" destination="YGd-bS-hDJ" id="ry9-1k-qfv"/>
@@ -339,7 +318,7 @@
         <!--Photo Collection - Photos-->
         <scene sceneID="QQO-Gd-k0o">
             <objects>
-                <collectionViewController storyboardIdentifier="photoCollection" autoresizesArchivedViewToFullSize="NO" id="hwv-k1-lKI" customClass="EHFPhotoCollection" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="photoCollection" autoresizesArchivedViewToFullSize="NO" modalTransitionStyle="crossDissolve" id="hwv-k1-lKI" customClass="EHFPhotoCollection" sceneMemberID="viewController">
                     <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="xXg-uY-ZVE">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -396,7 +375,7 @@
         <!--View Photo - Photo-->
         <scene sceneID="rrU-sR-3vN">
             <objects>
-                <viewController storyboardIdentifier="PhotoView" id="7cR-KF-xED" customClass="EHFViewPhoto" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhotoView" modalTransitionStyle="crossDissolve" id="7cR-KF-xED" customClass="EHFViewPhoto" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="f5U-Xf-LmI">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -425,10 +404,10 @@
             </objects>
             <point key="canvasLocation" x="-296" y="2475"/>
         </scene>
-        <!--Video Collection - Videos-->
+        <!--Video Collection - Video Collection-->
         <scene sceneID="iL0-AZ-axW">
             <objects>
-                <collectionViewController autoresizesArchivedViewToFullSize="NO" id="Su3-uL-IcI" customClass="EHFVideoCollection" sceneMemberID="viewController">
+                <collectionViewController autoresizesArchivedViewToFullSize="NO" title="Video Collection" modalTransitionStyle="crossDissolve" id="Su3-uL-IcI" customClass="EHFVideoCollection" sceneMemberID="viewController">
                     <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="3zr-GQ-dPU">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -476,8 +455,7 @@
         <!--Event - Event Details-->
         <scene sceneID="qqs-tc-58q">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Frv-sL-J5k" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController storyboardIdentifier="eventDetails" title="Event Details" id="Yl0-3u-wee" customClass="EHFEvent" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="eventDetails" title="Event Details" modalTransitionStyle="crossDissolve" id="Yl0-3u-wee" customClass="EHFEvent" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="UjS-Fh-vIu">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -596,13 +574,14 @@
                         <outlet property="eventStart" destination="Pi7-HB-QeI" id="7zJ-Ar-zl6"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Frv-sL-J5k" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="754" y="1600"/>
         </scene>
         <!--Collection View Controller-->
         <scene sceneID="7Nt-y9-u1z">
             <objects>
-                <collectionViewController autoresizesArchivedViewToFullSize="NO" id="rCO-Ix-PIL" sceneMemberID="viewController">
+                <collectionViewController autoresizesArchivedViewToFullSize="NO" modalTransitionStyle="crossDissolve" id="rCO-Ix-PIL" sceneMemberID="viewController">
                     <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="QdR-hg-sZH">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -668,7 +647,7 @@
         <!--Product-->
         <scene sceneID="lWG-5V-y7U">
             <objects>
-                <viewController id="edP-tT-TFi" customClass="UIProduct" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="crossDissolve" id="edP-tT-TFi" customClass="UIProduct" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="j7s-b1-Him">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -746,7 +725,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="egC-lP-2An" kind="relationship" relationship="rootViewController" id="ntz-b2-YHP"/>
+                        <segue destination="egC-lP-2An" kind="relationship" relationship="rootViewController" id="EUv-c4-LjP"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hNG-ak-ana" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -791,12 +770,12 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="ict-t8-hUp" secondAttribute="bottom" constant="20" type="default" id="96M-b0-l25"/>
-                                    <constraint firstItem="ict-t8-hUp" firstAttribute="top" secondItem="4eZ-o1-P8I" secondAttribute="top" type="default" id="UTh-Nc-ucb"/>
-                                    <constraint firstItem="ict-t8-hUp" firstAttribute="centerX" secondItem="b8N-yL-wNP" secondAttribute="centerX" type="default" id="Y3N-ig-bRy"/>
-                                    <constraint firstItem="b8N-yL-wNP" firstAttribute="leading" secondItem="4eZ-o1-P8I" secondAttribute="leading" type="default" id="pg4-yA-hQ1"/>
-                                    <constraint firstItem="b8N-yL-wNP" firstAttribute="bottom" secondItem="4eZ-o1-P8I" secondAttribute="bottom" type="default" id="svk-Ib-Z9B"/>
-                                    <constraint firstItem="ict-t8-hUp" firstAttribute="centerX" secondItem="4eZ-o1-P8I" secondAttribute="centerX" type="default" id="tZw-hW-p8j"/>
+                                    <constraint firstAttribute="bottom" secondItem="ict-t8-hUp" secondAttribute="bottom" constant="20" type="default" id="ENT-4E-QEG"/>
+                                    <constraint firstItem="b8N-yL-wNP" firstAttribute="leading" secondItem="4eZ-o1-P8I" secondAttribute="leading" type="default" id="J9B-Gt-AyZ"/>
+                                    <constraint firstItem="b8N-yL-wNP" firstAttribute="bottom" secondItem="4eZ-o1-P8I" secondAttribute="bottom" type="default" id="ULf-Bx-aNL"/>
+                                    <constraint firstItem="ict-t8-hUp" firstAttribute="top" secondItem="4eZ-o1-P8I" secondAttribute="top" type="default" id="n3e-uz-Jec"/>
+                                    <constraint firstItem="ict-t8-hUp" firstAttribute="centerX" secondItem="b8N-yL-wNP" secondAttribute="centerX" type="default" id="oJI-eu-0xu"/>
+                                    <constraint firstItem="ict-t8-hUp" firstAttribute="centerX" secondItem="4eZ-o1-P8I" secondAttribute="centerX" type="default" id="pGX-HH-V8M"/>
                                 </constraints>
                                 <size key="customSize" width="153" height="130"/>
                                 <connections>
@@ -831,105 +810,6 @@
         <image name="Logo.jpg" width="930" height="591"/>
         <image name="Splash.jpg" width="1536" height="2048"/>
     </resources>
-    <classes>
-        <class className="EHFAbout" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFAbout.h"/>
-            <relationships>
-                <relationship kind="outlet" name="txtAbout" candidateClass="UITextView"/>
-            </relationships>
-        </class>
-        <class className="EHFAlbumsList" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFAlbumsList.h"/>
-            <relationships>
-                <relationship kind="outlet" name="noAlbum" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="EHFContact" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFContact.h"/>
-            <relationships>
-                <relationship kind="outlet" name="subview" candidateClass="UIView"/>
-                <relationship kind="outlet" name="txtAddress" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="txtName" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="txtPhone" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="txtWebsite" candidateClass="UITextView"/>
-            </relationships>
-        </class>
-        <class className="EHFEvent" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFEvent.h"/>
-            <relationships>
-                <relationship kind="outlet" name="eventDescription" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="eventEnd" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="eventImage" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="eventLocation" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="eventName" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="eventStart" candidateClass="UITextView"/>
-            </relationships>
-        </class>
-        <class className="EHFEventList" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFEventList.h"/>
-            <relationships>
-                <relationship kind="outlet" name="noEvent" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="EHFMediaItem" superclassName="UICollectionViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFMediaItem.h"/>
-            <relationships>
-                <relationship kind="outlet" name="image" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-        <class className="EHFMenu" superclassName="UICollectionViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFMenu.h"/>
-            <relationships>
-                <relationship kind="outlet" name="MenuCollectionView" candidateClass="UICollectionView"/>
-            </relationships>
-        </class>
-        <class className="EHFMenuItem" superclassName="UICollectionViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFMenuItem.h"/>
-            <relationships>
-                <relationship kind="outlet" name="MenuItemImage" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="MenuItemText" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="EHFPhotoCollection" superclassName="UICollectionViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFPhotoCollection.h"/>
-        </class>
-        <class className="EHFSplashScreen" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFSplashScreen.h"/>
-            <relationships>
-                <relationship kind="outlet" name="spinner" candidateClass="UIActivityIndicatorView"/>
-            </relationships>
-        </class>
-        <class className="EHFVideoCollection" superclassName="UICollectionViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFVideoCollection.h"/>
-        </class>
-        <class className="EHFViewPhoto" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/EHFViewPhoto.h"/>
-            <relationships>
-                <relationship kind="outlet" name="PhotoView" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-        <class className="UICollectionReusableView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionReusableView.h"/>
-        </class>
-        <class className="UICollectionViewCell" superclassName="UICollectionReusableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewCell.h"/>
-        </class>
-        <class className="UICollectionViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewController.h"/>
-        </class>
-        <class className="UICollectionViewFlowLayout" superclassName="UICollectionViewLayout">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewFlowLayout.h"/>
-        </class>
-        <class className="UICollectionViewLayout" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UICollectionViewLayout.h"/>
-        </class>
-        <class className="UIRefreshControl" superclassName="UIControl">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UIRefreshControl.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

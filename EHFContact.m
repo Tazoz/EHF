@@ -38,25 +38,25 @@ EHFDataStore *data;
     NSDictionary *loc = [data.info objectForKey:@"location"];
     
     _txtName.text = [data.info objectForKey:@"name"];
-    _txtAddress.text = [NSString stringWithFormat: @"%@\n%@, %@\n%@, %@",[loc objectForKey:@"street"],[loc objectForKey:@"city"],[loc objectForKey:@"zip"],[loc objectForKey:@"state"],[loc objectForKey:@"country"]];
+    _txtAddress.text = [NSString stringWithFormat: @"Address:\n%@\n%@, %@\n%@, %@",[loc objectForKey:@"street"],[loc objectForKey:@"city"],[loc objectForKey:@"zip"],[loc objectForKey:@"state"],[loc objectForKey:@"country"]];
     
-    _txtPhone.text = [data.info objectForKey:@"phone"];
-    _txtWebsite.text = [data.info objectForKey:@"link"];
+    _txtPhone.text = [NSString stringWithFormat:@"Phone:  %@", [data.info objectForKey:@"phone"]];
+    _txtWebsite.text = [NSString stringWithFormat:@"Webiste:\n%@", [data.info objectForKey:@"link"]];
     
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:[[loc objectForKey:@"latitude"] floatValue]
                                                             longitude:[[loc objectForKey:@"longitude"] floatValue]
                                                                  zoom:15];
     
-    mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 180) camera: camera];
+    mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 200) camera: camera];
     mapView_.myLocationEnabled = YES;
     
     GMSMarker *marker = [[GMSMarker alloc] init];
     marker.position = CLLocationCoordinate2DMake([[loc objectForKey:@"latitude"] floatValue], [[loc objectForKey:@"longitude"] floatValue]);
-    marker.title = @"Everybody Health & Fitness";
+    marker.title = [data.info objectForKey:@"name"];
     marker.snippet = @"Mazenod College Gymnasium";
     marker.map = mapView_;
     
-    mapView_.userInteractionEnabled = NO;
+    mapView_.userInteractionEnabled = YES;
     [self.view addSubview:mapView_];
 }
 

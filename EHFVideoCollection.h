@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface EHFVideoCollection : UICollectionViewController
+
+@property (nonatomic,strong) MPMoviePlayerController *myPlayer;
 
 @end

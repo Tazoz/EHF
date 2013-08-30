@@ -11,6 +11,7 @@
 #import "EHFPhotoClass.h"
 #import "EHFMediaItem.h"
 #import "EHFViewPhoto.h"
+#import "Reachability.h"
 
 @implementation EHFPhotoCollection
 @synthesize album;
@@ -44,9 +45,18 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+        UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection"
+                                                          message:@"\nNo network connection to access photo."
+                                                         delegate:self
+                                                cancelButtonTitle:@"Back" otherButtonTitles:nil];
+        [myAlert show];
+        
+    } else {
+
     UIAlertView *alert;
     
-    alert = [[UIAlertView alloc] initWithTitle:@"Enlarging Photo\nPlease Wait..." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+    alert = [[UIAlertView alloc] initWithTitle:@"Enlarging Photo From Network\nPlease Wait..." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
     [alert show];
     UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);
@@ -66,5 +76,6 @@
             [self.navigationController pushViewController:photoView animated:YES];
         });
     });
+    }
 }
 @end

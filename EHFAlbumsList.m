@@ -109,19 +109,14 @@ UIRefreshControl *refreshControl;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     __block EHFPhotoCollection *pc;
 
-    Reachability *networkReachability = [Reachability reachabilityForInternetConnection];
-    NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
-    if (networkStatus == NotReachable) {
-        UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection"
-                                                          message:@"\nNo network connection to access photos."
-                                                         delegate:self
-                                                cancelButtonTitle:@"Back" otherButtonTitles:nil];
+   if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+       UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection" message:@"\nNo network connection to access photos." delegate:self cancelButtonTitle:@"Back" otherButtonTitles:nil];
         [myAlert show];
         
     } else {
                 UIAlertView *alert;
         [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
-        alert = [[UIAlertView alloc] initWithTitle:@"Retrieving Photos\nPlease Wait..." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+        alert = [[UIAlertView alloc] initWithTitle:@"Retrieving Photos From Network\nPlease Wait..." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
         [alert show];
         UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);

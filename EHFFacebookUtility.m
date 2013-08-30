@@ -72,7 +72,7 @@ NSString *fbID = @"321024947913270";
              alertTitle = @"Session Error";
              alertMessage = @"Your current session is no longer valid. Please log in again.";
          } else if (error.fberrorCategory == FBErrorCategoryUserCancelled) {
-                    NSLog(@"user cancelled login");
+             NSLog(@"user cancelled login");
          }
          if (alertMessage !=NULL) {
              [[[UIAlertView alloc] initWithTitle:alertTitle

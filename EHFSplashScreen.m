@@ -29,9 +29,7 @@ EHFFacebookUtility *fu;
     
     [_spinner startAnimating];
     
-    Reachability *networkReachability = [Reachability reachabilityForInternetConnection];
-    NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
-    if (networkStatus == NotReachable) {
+   if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
         [_spinner stopAnimating];
         UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection"
                                                           message:@"\nYou require an internet connection for EHF to work."

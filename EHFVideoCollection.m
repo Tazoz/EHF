@@ -23,11 +23,6 @@ EHFDataStore *data;
         data=[EHFDataStore getInstance];
     }
     
-    if([data.videos count]==0)
-    {
-        self.title = @"No Videos";
-    }
-    
     return self;
 }
 
@@ -38,6 +33,10 @@ EHFDataStore *data;
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    if([data.videos count]==0)
+    {
+        self.navigationItem.title = @"No Videos To View";
+    }
     return [data.videos count];
 }
 
@@ -63,26 +62,26 @@ EHFDataStore *data;
     EHFVideoClass *video = data.videos[indexPath.row];
     
     MPMoviePlayerController *moviePlayer=[[MPMoviePlayerController alloc] initWithContentURL:[[NSURL alloc] initWithString:video.videoURL]];
+    [moviePlayer prepareToPlay];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayBackDidFinish:) name:MPMoviePlayerPlaybackDidFinishNotification object:moviePlayer];
-    
-    moviePlayer.controlStyle=MPMovieControlStyleDefault;
+    moviePlayer.view.frame = self.view.bounds;
+    moviePlayer.controlStyle=MPMovieControlStyleFullscreen;
+    moviePlayer.movieSourceType = MPMovieSourceTypeFile;
     moviePlayer.shouldAutoplay=YES;
-    [self.view addSubview:moviePlayer.view];
     [moviePlayer setFullscreen:YES animated:YES];
+    self.myPlayer = moviePlayer;
     
+    UIWindow *backgroundWindow = [[UIApplication sharedApplication] keyWindow];
+    [moviePlayer.view setFrame:backgroundWindow.frame];
+    [backgroundWindow addSubview:self.myPlayer.view];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayBackDidFinish:) name:MPMoviePlayerPlaybackDidFinishNotification object:self.myPlayer];
+    [self.myPlayer play];
 }
 
 - (void) moviePlayBackDidFinish:(NSNotification*)notification
 {
-    
     MPMoviePlayerController *player = [notification object];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:player];
-    
-    if ([player respondsToSelector:@selector(setFullscreen:animated:)])
-    {
-        [player.view removeFromSuperview];
-    }
+    [player.view removeFromSuperview];
 }
 @end

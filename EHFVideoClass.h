@@ -15,7 +15,6 @@
     NSString *previewURL;
     NSString *fullURL;
     UIImage *preview;
-    
 }
 
 @property(nonatomic,retain)NSString *videoId;
@@ -23,7 +22,6 @@
 @property(nonatomic,retain)NSString *previewURL;
 @property(nonatomic,retain)NSString *videoURL;
 @property(nonatomic,retain)UIImage *preview;
-
 
 -(UIImage*)getImageFromURL:(NSString *)url;
 

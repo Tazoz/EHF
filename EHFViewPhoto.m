@@ -21,18 +21,32 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-            }
+    }
     return self;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     if(photo.full == nil){
         photo.full = [photo getImageFromURL:photo.fullURL];
     }
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture)];
+    tapGesture.numberOfTapsRequired=1;
+    [PhotoView setUserInteractionEnabled:YES];
+    [PhotoView addGestureRecognizer:tapGesture];
     PhotoView.image = photo.full;
+}
+
+-(void)handleTapGesture{
+    
+    
+    if(self.navigationController.navigationBar.hidden){
+        [[self navigationController] setNavigationBarHidden:NO animated:NO];
+    }else{
+        [[self navigationController] setNavigationBarHidden:YES animated:NO];
+    }
 }
 
 - (void)didReceiveMemoryWarning

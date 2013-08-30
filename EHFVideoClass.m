@@ -16,7 +16,6 @@
 @synthesize videoURL;
 @synthesize preview;
 
-
 -(UIImage *) getImageFromURL :(NSString *) url{
     [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
     UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url]]];
