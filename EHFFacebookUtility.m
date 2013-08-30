@@ -148,7 +148,7 @@ NSString *fbID = @"321024947913270";
                               NSLog(@"You have %d album(s)", [(NSMutableArray*)[result data] count]);
                               [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
                               
-                              if(expectedAlbums>1){
+                              if(expectedAlbums>0){
                                   [data.albums removeAllObjects];
                               }
                               
@@ -214,7 +214,7 @@ NSString *fbID = @"321024947913270";
                               }
                               expectedEvents = (NSInteger)[(NSMutableArray*)[result data] count];
                               
-                              if(expectedEvents>1){
+                              if(expectedEvents>0){
                                   [data.events removeAllObjects];
                               }
                               
@@ -244,7 +244,7 @@ NSString *fbID = @"321024947913270";
                               }
                               [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
                               
-                              NSLog(@"You have %d event(s)", [data.events count]);
+                              NSLog(@"You have %d event(s)", [(NSMutableArray*)[result data] count]);
                           }];
 }
 

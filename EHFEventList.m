@@ -23,12 +23,13 @@
 EHFDataStore *data;
 EHFFacebookUtility *fu;
 UIRefreshControl *refreshControl;
+NSDateFormatter *formatter;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
-
+        
     }
     return self;
 }
@@ -44,20 +45,22 @@ UIRefreshControl *refreshControl;
     }
     
     refreshControl = [[UIRefreshControl alloc] init];
+    formatter = [[NSDateFormatter alloc] init];
+    
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Pull to refresh"]];
     [refreshControl addTarget:self action:@selector(refreshEventList) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
 }
 
 -(void)refreshEventList{
+    [formatter setDateFormat:@"MMM d, HH:mm"];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]]];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reloadTableValues)
                                                  name:@"FBComplete"
                                                object:nil];
     [fu sendEventsRequest];
-    
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"MMM d, HH:mm"];
-    //refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]]];
 }
 
 -(void)reloadTableValues{
@@ -68,7 +71,7 @@ UIRefreshControl *refreshControl;
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-
+    
 }
 
 #pragma mark - Table view data source
@@ -116,9 +119,9 @@ UIRefreshControl *refreshControl;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     __block EHFEvent *ec;
     
-        EHFEventClass *event = [data.events objectAtIndex:indexPath.row];
-        ec = [self.storyboard instantiateViewControllerWithIdentifier:@"eventDetails"];
-        ec.event = event;
-        [self.navigationController pushViewController:ec animated:YES];
+    EHFEventClass *event = [data.events objectAtIndex:indexPath.row];
+    ec = [self.storyboard instantiateViewControllerWithIdentifier:@"eventDetails"];
+    ec.event = event;
+    [self.navigationController pushViewController:ec animated:YES];
 }
 @end
