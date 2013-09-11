@@ -37,9 +37,9 @@
     [[self MenuCollectionView]setDataSource:self];
     [[self MenuCollectionView]setDelegate:self];
     
-    arrayOfImages = [[NSArray alloc]initWithObjects:@"about.png", @"events.png", @"photos.png", @"store.png", @"videos.png", @"contact.png", nil];
-    arrayOfTitles = [[NSArray alloc]initWithObjects:@"About Us", @"Events", @"Photos", @"Store", @"Videos", @"Contact Us", nil];
-    arrayOfSegues = [[NSArray alloc]initWithObjects:@"aboutSegue", @"eventsSegue", @"albumListSegue", @"storeSegue", @"videoSegue", @"contactSegue", nil];
+    arrayOfImages = [[NSArray alloc]initWithObjects:@"about.png", @"events.png", @"photos.png", @"store.png", @"videos.png", @"feed", @"contact.png", nil];
+    arrayOfTitles = [[NSArray alloc]initWithObjects:@"About Us", @"Events", @"Photos", @"Store", @"Videos", @"Live Feed", @"Contact Us", nil];
+    arrayOfSegues = [[NSArray alloc]initWithObjects:@"aboutSegue", @"eventsSegue", @"albumListSegue", @"storeSegue", @"videoSegue", @"feedSegue", @"contactSegue", nil];
     
 }
 

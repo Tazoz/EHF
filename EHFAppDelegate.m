@@ -54,7 +54,7 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     //[[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
-    return YES;
+    return [FBSession.activeSession handleOpenURL:url];
 }
 
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible {

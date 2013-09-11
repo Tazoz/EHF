@@ -32,6 +32,8 @@
     if(photo.full == nil){
         photo.full = [photo getImageFromURL:photo.fullURL];
     }
+    
+    self.navigationItem.title = photo.name;
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture)];
     tapGesture.numberOfTapsRequired=1;
     [PhotoView setUserInteractionEnabled:YES];

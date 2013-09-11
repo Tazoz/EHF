@@ -38,7 +38,7 @@ EHFDataStore *data;
         AboutInfo = [NSString stringWithFormat: @"%@ has not supplied any about information." , (NSString *)[data.info objectForKey:@"name"]];
         
     }else{
-    AboutInfo = [(NSString *)[data.info objectForKey:@"about"] stringByTrimmingCharactersInSet:
+    AboutInfo = [(NSString *)[data.info objectForKey:@"description"] stringByTrimmingCharactersInSet:
                            [NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
     

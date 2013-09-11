@@ -13,6 +13,7 @@
 @synthesize albums;
 @synthesize events;
 @synthesize videos;
+@synthesize posts;
 
 static EHFDataStore *instance =nil;
 +(EHFDataStore *)getInstance
@@ -35,6 +36,7 @@ static EHFDataStore *instance =nil;
         self.albums = [[NSMutableArray alloc] init];
         self.events = [[NSMutableArray alloc] init];
         self.videos = [[NSMutableArray alloc] init];
+        self.posts = [[NSMutableArray alloc] init];
     }
     
     return self;

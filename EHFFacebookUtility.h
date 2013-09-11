@@ -17,5 +17,6 @@
 -(void)sendAlbumsRequest;
 -(void)sendEventsRequest;
 -(void)sendVideoRequest;
+-(void)sendFeedRequest;
 
 @end

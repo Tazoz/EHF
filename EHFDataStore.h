@@ -14,12 +14,14 @@
     NSMutableArray *albums;
     NSMutableArray *events;
     NSMutableArray *videos;
+    NSMutableArray *posts;
 }
 
 @property(nonatomic,retain)NSDictionary *info;
 @property(nonatomic,retain)NSMutableArray *albums;
 @property(nonatomic,retain)NSMutableArray *events;
 @property(nonatomic,retain)NSMutableArray *videos;
+@property(nonatomic,retain)NSMutableArray *posts;
 +(EHFDataStore*)getInstance;
 
 @end

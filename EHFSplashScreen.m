@@ -29,7 +29,7 @@ EHFFacebookUtility *fu;
     
     [_spinner startAnimating];
     
-   if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
         [_spinner stopAnimating];
         UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection"
                                                           message:@"\nYou require an internet connection for EHF to work."
@@ -68,21 +68,28 @@ EHFFacebookUtility *fu;
     NSNumber* albumComplete = [dataDict objectForKey:@"albumComplete"];
     NSNumber* eventComplete = [dataDict objectForKey:@"eventComplete"];
     NSNumber* videoComplete = [dataDict objectForKey:@"videoComplete"];
+    NSNumber* feedComplete = [dataDict objectForKey:@"feedComplete"];
+    
     NSNumber* pageError = [dataDict objectForKey:@"pageError"];
     NSNumber* albumError = [dataDict objectForKey:@"albumError"];
     NSNumber* eventError = [dataDict objectForKey:@"eventError"];
     NSNumber* videoError = [dataDict objectForKey:@"videoError"];
+    NSNumber* feedError = [dataDict objectForKey:@"feedError"];
     
     if([pageComplete boolValue] == TRUE){
-        
+        NSLog(@"CHECK 1");
         if([albumComplete boolValue] == TRUE || [albumError boolValue] == TRUE){
-            
+            NSLog(@"CHECK 2");
             if([eventComplete boolValue] == TRUE || [eventError boolValue] == TRUE){
-                
+                NSLog(@"CHECK 3");
                 if([videoComplete boolValue] == TRUE || [videoError boolValue] == TRUE){
+                    NSLog(@"CHECK 4");
+                    if([feedComplete boolValue] == TRUE || [feedError boolValue] == TRUE){
+                        NSLog(@"CHECK 5");
+                        [_spinner stopAnimating];
+                        [self performSegueWithIdentifier:@"menuSegue" sender:self];
+                    }
                     
-                    [_spinner stopAnimating];
-                    [self performSegueWithIdentifier:@"menuSegue" sender:self];
                 }
             }
             

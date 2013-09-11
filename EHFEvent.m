@@ -32,6 +32,7 @@
     _eventName.text = event.name;
     _eventStart.text = event.start;
     _eventDescription.text = event.description;
+    self.navigationItem.title = event.name;
     
     if(event.end == NULL)
     {
