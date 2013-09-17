@@ -19,4 +19,8 @@
 -(void)sendVideoRequest;
 -(void)sendFeedRequest;
 
+-(void)postComment :(NSString*)message :(NSString*)eid;
+-(void)postLike :(NSString*)eid;
+-(void)postUnlike :(NSString*)eid;
+
 @end

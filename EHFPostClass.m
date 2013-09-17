@@ -19,6 +19,7 @@
 @synthesize photo;
 @synthesize objectId;
 @synthesize objectType;
+@synthesize linkURL;
 @synthesize comments;
 
 @end

@@ -14,8 +14,8 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>logo.png</string>
-				<string>logo57.png</string>
+				<string>icon.png</string>
+				<string>icon57.png</string>
 			</array>
 		</dict>
 	</dict>
@@ -37,6 +37,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb143051672569889</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Open SmartDownloads</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>sz479227</string>
 			</array>
 		</dict>
 	</array>

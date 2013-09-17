@@ -39,9 +39,14 @@ EHFFacebookUtility *fu;
         
     } else {
         fu = [[EHFFacebookUtility alloc]init];
-        [fu authenticateFB];
+        
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [fu authenticateFB];
+            dispatch_async(dispatch_get_main_queue(), ^{
+               [fu retrieveAll];
+            });
+        });
     }
-    
 }
 
 
@@ -77,15 +82,15 @@ EHFFacebookUtility *fu;
     NSNumber* feedError = [dataDict objectForKey:@"feedError"];
     
     if([pageComplete boolValue] == TRUE){
-        NSLog(@"CHECK 1");
+        //NSLog(@"CHECK 1");
         if([albumComplete boolValue] == TRUE || [albumError boolValue] == TRUE){
-            NSLog(@"CHECK 2");
+          //  NSLog(@"CHECK 2");
             if([eventComplete boolValue] == TRUE || [eventError boolValue] == TRUE){
-                NSLog(@"CHECK 3");
+            //    NSLog(@"CHECK 3");
                 if([videoComplete boolValue] == TRUE || [videoError boolValue] == TRUE){
-                    NSLog(@"CHECK 4");
+              //      NSLog(@"CHECK 4");
                     if([feedComplete boolValue] == TRUE || [feedError boolValue] == TRUE){
-                        NSLog(@"CHECK 5");
+                //        NSLog(@"CHECK 5");
                         [_spinner stopAnimating];
                         [self performSegueWithIdentifier:@"menuSegue" sender:self];
                     }

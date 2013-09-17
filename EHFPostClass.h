@@ -17,6 +17,7 @@
     NSString *message;
     NSString *objectId;
     NSString *objectType;
+    NSString *linkURL;
     EHFPhotoClass *photo;
     NSMutableArray *comments;
 }
@@ -27,6 +28,7 @@
 @property(nonatomic,retain)NSString *message;
 @property(nonatomic,retain)NSString *objectId;
 @property(nonatomic,retain)NSString *objectType;
+@property(nonatomic,retain)NSString *linkURL;
 @property(nonatomic,retain)EHFPhotoClass *photo;
 @property(nonatomic,retain)NSMutableArray *comments;
 

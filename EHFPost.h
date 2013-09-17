@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UITextView *postText;
 @property (weak, nonatomic) IBOutlet UITableView *replies;
 @property (weak, nonatomic) IBOutlet EHFPostClass *post;
+@property (weak, nonatomic) NSString *eid;
 
 @property (nonatomic,strong) MPMoviePlayerController *myPlayer;
 

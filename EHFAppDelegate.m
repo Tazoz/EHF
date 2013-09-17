@@ -9,6 +9,7 @@
 #import "EHFAppDelegate.h"
 #import <GoogleMaps/GoogleMaps.h>
 #import <FacebookSDK/FacebookSDK.h>
+#import <Socialize/Socialize.h>
 
 @implementation EHFAppDelegate
 
@@ -16,9 +17,36 @@
 {
     // Override point for customization after application launch.
     [GMSServices provideAPIKey:@"AIzaSyBWgaXbHXlmGhPR0s6Ag43Kjkj6-KDMAe8"];
+    [Socialize storeConsumerKey:@"62aaaf8c-402b-4844-81c4-8e57aa4de9e1"];
+    [Socialize storeConsumerSecret:@"8b6a4a69-ede2-431a-a74d-41472806e2cf"];
+    [SZFacebookUtils setAppId:@"143051672569889"];
+    [Socialize storeOGLikeEnabled:YES];
+    
+    // Register for Apple Push Notification Service
+    [application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
+    
+    // Handle Socialize notification at launch
+    NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (userInfo != nil) {
+        //        [self handleNotification:userInfo];
+    }
+    
+    // Specify a Socialize entity loader block
+    [Socialize setEntityLoaderBlock:^(UINavigationController *navigationController, id<SocializeEntity>entity) {
+        
+        SampleEntityLoader *entityLoader = [[SampleEntityLoader alloc] initWithEntity:entity];
+        
+        if (navigationController == nil) {
+            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:entityLoader];
+            [self.window.rootViewController presentModalViewController:navigationController animated:YES];
+        
+        } else {
+            [navigationController pushViewController:entityLoader animated:YES];
+        }
+    }];
     return YES;
 }
-							
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -27,7 +55,7 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
@@ -54,7 +82,8 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     //[[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
-    return [FBSession.activeSession handleOpenURL:url];
+    //return [FBSession.activeSession handleOpenURL:url];
+    return [Socialize handleOpenURL:url];
 }
 
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible {

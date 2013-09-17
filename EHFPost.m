@@ -10,6 +10,8 @@
 #import "Reachability.h"
 #import "EHFViewPhoto.h"
 #import "EHFDataStore.h"
+#import "EHFSocializeUtility.h"
+
 
 @interface EHFPost ()
 
@@ -17,6 +19,7 @@
 
 @implementation EHFPost
 @synthesize post;
+@synthesize eid;
 
 EHFDataStore *data;
 
@@ -36,12 +39,20 @@ EHFDataStore *data;
     data=[EHFDataStore getInstance];
     self.image.image = post.photo.preview;
     
-    if(post.photo ==nil){
+    self.eid = [NSString stringWithFormat:@"fbPhoto%@", post.photo.photoId];
+    
+    if(post.photo.photoId ==nil){
         self.image.hidden = true;
+        self.eid = [NSString stringWithFormat:@"fbPost%@", post.postId];
     }
     
     self.postText.text = post.message;
     self.navigationItem.title = post.message;
+    
+    EHFSocializeUtility *su = [[EHFSocializeUtility alloc]init];
+    
+    [self.view addSubview:[su generateActionBar:eid :post.message :@"post" :post.linkURL :self]];
+    
     
     UITapGestureRecognizer *imageTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(goToContentView)];
     
