@@ -118,7 +118,7 @@ NSDateFormatter *formatter;
     } else {
         UIAlertView *alert;
         [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
-        alert = [[UIAlertView alloc] initWithTitle:@"Retrieving Photos From Network\nPlease Wait..." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+        alert = [[UIAlertView alloc] initWithTitle:@"Retrieving Photos" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
         [alert show];
         UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);

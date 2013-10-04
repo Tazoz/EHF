@@ -10,4 +10,5 @@
 
 @interface EHFAbout : UIViewController
 @property (weak, nonatomic) IBOutlet UITextView *txtAbout;
+@property (weak, nonatomic) IBOutlet UIImageView *coverPhoto;
 @end

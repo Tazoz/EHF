@@ -63,7 +63,7 @@ NSString *fbID = @"321024947913270";
 -(void)authenticateFB{
     // Attempt to open the session. If the session is not open, show the user the Facebook login UX
     
-       [FBSession openActiveSessionWithReadPermissions:@[@"basic_info"] allowLoginUI:true completionHandler:^(FBSession *session,
+    [FBSession openActiveSessionWithReadPermissions:@[@"basic_info"] allowLoginUI:true completionHandler:^(FBSession *session,
                                                                                                            FBSessionState status,
                                                                                                            NSError *error)
      {
@@ -100,14 +100,10 @@ NSString *fbID = @"321024947913270";
          else
          {
              NSLog(@"Facebook Authentication Successfull");
-             // Update now we've logged in
              
-//             [FBSession.activeSession requestNewPublishPermissions:@[@"publish_stream", @"share_item", @"publish_actions"]
-//                                                   defaultAudience:FBSessionDefaultAudienceFriends
-//                                                 completionHandler:^(FBSession *session,
-//                                                                     NSError *error) {
-//                                                     
-//                                                 }];
+             if([data.info objectForKey:@"id"] == nil){
+                 [[NSNotificationCenter defaultCenter] postNotificationName:@"FBAuthenticated" object:self];
+             }
              
              NSString *existingToken =  [session accessTokenData].accessToken;
              NSDate *existingExpiration = [NSDate distantFuture];
@@ -119,7 +115,7 @@ NSString *fbID = @"321024947913270";
              }];
          }
      }];
-    }
+}
 
 -(void)retrieveAll{
     [self sendPageRequest];
@@ -142,7 +138,13 @@ NSString *fbID = @"321024947913270";
                                   return;
                               }
                               
-                              data.info = (NSDictionary *)result;
+                              data.info = (NSMutableDictionary *)result;
+                              NSDictionary *cover = [data.info objectForKey:@"cover"];
+                              
+                              EHFPhotoClass *photo = [[EHFPhotoClass alloc]init];
+                              photo.fullURL = [cover objectForKey:@"source"];
+                              photo.full = [photo getImageFromURL:photo.fullURL];
+                              [data.info setObject:photo.full forKey:@"coverPhoto"];
                               [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
                               
                               NSLog(@"Name Retrieved: %@", [data.info objectForKey:@"name"]);
@@ -153,7 +155,6 @@ NSString *fbID = @"321024947913270";
 
 - (void)sendAlbumsRequest{
     [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
-    
     [FBRequestConnection startWithGraphPath:[fbID stringByAppendingString:@"/albums?fields=cover_photo,id,name"]
                           completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                               
@@ -175,20 +176,19 @@ NSString *fbID = @"321024947913270";
                               for (NSDictionary* albumDict in (NSMutableArray*)[result data])
                               {
                                   EHFAlbumClass *newAlbum = [[EHFAlbumClass alloc] init];
-                                  [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
                                   [FBRequestConnection startWithGraphPath:[@"/" stringByAppendingString: [albumDict objectForKey:@"cover_photo"]]
                                                         completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                                                             
                                                             if(error) {
                                                                 [self printError: error];
-                                                                [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
+                                                                
                                                                 return;
                                                             }
                                                             newAlbum.cover = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@", [(NSDictionary *)result objectForKey:@"picture"]]]]];
                                                             newAlbum.name = [albumDict objectForKey:@"name"];
                                                             newAlbum.albumId = [albumDict objectForKey:@"id"];
                                                             [data.albums addObject:newAlbum];
-                                                            [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
+                                                            
                                                             
                                                             if([data.albums count] == expectedAlbums){
                                                                 albumComplete = TRUE;
@@ -200,15 +200,14 @@ NSString *fbID = @"321024947913270";
                                                             }
                                                             
                                                         }];
-                                  [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
                                   [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"%@/photos?fields=name,picture,source&limit=1000", [albumDict objectForKey:@"id"]]
                                                         completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                                                             if(error) {
                                                                 [self printError: error];
-                                                                [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
+                                                                
                                                                 return;
                                                             }
-                                                            [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
+                                                            
                                                             for (NSDictionary* photoDict in (NSMutableArray*)[result data])
                                                             {
                                                                 EHFPhotoClass *newPhoto = [[EHFPhotoClass alloc]init];
@@ -340,8 +339,6 @@ NSString *fbID = @"321024947913270";
                                   return;
                               }
                               
-                              
-                              [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
                               for (NSDictionary* postDict in (NSMutableArray*)[result data])
                               {
                                   if ([postDict objectForKey:@"message"] != Nil){
@@ -360,48 +357,51 @@ NSString *fbID = @"321024947913270";
                                       NSDictionary *from = [postDict objectForKey:@"from"];
                                       newPost.name = [from objectForKey:@"name"];
                                       
-                                      //                                      __block NSInteger expectedComments;
-                                      //                                      [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
-                                      //                                      [FBRequestConnection startWithGraphPath:[newPost.postId stringByAppendingString:@"?fields=comments.fields(comments,message)"]
-                                      //                                                            completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                                      //                                                                if(error) {
-                                      //                                                                    [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
-                                      //                                                                    return;
-                                      //                                                                }
-                                      //                                                                expectedComments = 0;
-                                      //
-                                      //                                                                NSArray* comments = (NSArray*)[result comments];
-                                      //
-                                      //                                                                if(expectedComments>0){
-                                      //                                                                    [newPost.comments removeAllObjects];
-                                      //
-                                      //                                                                }else{
-                                      //                                                                    [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
-                                      //                                                                    return;
-                                      //                                                                }
-                                      //
-                                      //                                                                [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
-                                      //                                                                for (NSDictionary* commentDict in comments)
-                                      //                                                                {
-                                      //                                                                    if ([commentDict objectForKey:@"message"] != Nil){
-                                      //                                                                        EHFPostClass *newComment = [[EHFPostClass alloc]init];
-                                      //
-                                      //                                                                        newComment.message = [commentDict objectForKey:@"message"];
-                                      //                                                                        newComment.postId = [commentDict objectForKey:@"id"];
-                                      //                                                                        newComment.created = [commentDict objectForKey:@"created_time"];
-                                      //
-                                      //                                                                        NSDictionary *from = [commentDict objectForKey:@"from"];
-                                      //                                                                        newComment.name = [from objectForKey:@"name"];
-                                      //
-                                      //                                                                        [newPost.comments addObject:newComment];
-                                      //                                                                    }
-                                      //                                                                }
-                                      //
-                                      //                                                            }];
+                                      __block NSInteger expectedComments;
+                                      [FBRequestConnection startWithGraphPath:[newPost.postId stringByAppendingString:@"?fields=comments.fields(created_time,message,from)"]
+                                                            completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                                                                if(error) {
+                                                                    
+                                                                    return;
+                                                                }
+                                                                expectedComments = 0;
+                                                                
+                                                                NSDictionary *comments = [result objectForKey:@"comments"];
+                                                                NSArray *data          = [comments objectForKey:@"data"];
+                                                                expectedComments = [data count];
+                                                                
+                                                                if(expectedComments>0){
+                                                                    [newPost.comments removeAllObjects];
+                                                                    
+                                                                }else{
+                                                                    
+                                                                    return;
+                                                                }
+                                                                
+                                                                
+                                                                for (NSDictionary* commentDict in data)
+                                                                {
+                                                                    if ([commentDict objectForKey:@"message"] != Nil){
+                                                                        EHFPostClass *newComment = [[EHFPostClass alloc]init];
+                                                                        
+                                                                        newComment.message = [commentDict objectForKey:@"message"];
+                                                                        newComment.postId = [commentDict objectForKey:@"id"];
+                                                                        newComment.created = [commentDict objectForKey:@"created_time"];
+                                                                        // newComment.linkURL = [commentDict objectForKey:@"link"];
+                                                                        
+                                                                        NSDictionary *from = [commentDict objectForKey:@"from"];
+                                                                        newComment.name = [from objectForKey:@"name"];
+                                                                        
+                                                                        [newPost.comments addObject:newComment];
+                                                                    }
+                                                                }
+                                                                
+                                                            }];
                                       
                                       [data.posts addObject:newPost];
                                       
                                       if([data.posts count] == expectedPosts){
+                                          [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
                                           feedComplete = TRUE;
                                           [self sendNotification];
                                       }
@@ -414,7 +414,7 @@ NSString *fbID = @"321024947913270";
 -(void)postComment :(NSString*)message :(NSString*)eid
 {
     [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
-
+    
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"%@/comments?message=%@",eid,message]
                                  parameters:[NSMutableDictionary dictionaryWithObjectsAndKeys: @"message", message,nil]
                                  HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -429,6 +429,82 @@ NSString *fbID = @"321024947913270";
                                  }];
     [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
 }
+
+
+
+-(void)postPhoto :(UIImage*)photo :(NSString*)message
+{
+    
+    [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
+    
+    FBRequestConnection *connection = [[FBRequestConnection alloc] init];
+    
+    // First request uploads the photo.
+    FBRequest *request1 = [FBRequest
+                           requestForUploadPhoto:photo];
+    [connection addRequest:request1
+         completionHandler:
+     ^(FBRequestConnection *connection, id result, NSError *error) {
+         if (!error) {
+         }
+     }
+            batchEntryName:@"photopost"
+     ];
+    
+    // Second request retrieves photo information for just-created
+    // photo so we can grab its source.
+    FBRequest *request2 = [FBRequest
+                           requestForGraphPath:@"{result=photopost:$.id}"];
+    [connection addRequest:request2
+         completionHandler:
+     ^(FBRequestConnection *connection, id result, NSError *error) {
+         if (!error &&
+             result) {
+             [self postOnWall:[result objectForKey:@"source"] :message];
+         }
+     }
+     ];
+    
+    [connection start];
+    
+    [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
+}
+
+-(void)postOnWall :(NSString *)url :(NSString*)message
+{
+    
+    [FBSession.activeSession requestNewPublishPermissions:@[@"publish_stream"]
+                                          defaultAudience:FBSessionDefaultAudienceFriends
+                                        completionHandler:^(FBSession *session,
+                                                            NSError *error) {
+                                            // Handle new permissions callback
+                                        }];
+    
+    NSMutableDictionary *params = [[NSMutableDictionary alloc]init];
+    [params setObject:message forKey:@"message"];
+    [params setObject:[NSString stringWithFormat:@"Posted using the %@ iPhone App",[data.info objectForKey:@"name"]] forKey:@"description"];
+    [params setObject:[data.info objectForKey:@"id"] forKey:@"place"];
+    [params setObject:[data.info objectForKey:@"name"] forKey:@"name"];
+    [params setObject:[data.info objectForKey:@"name"] forKey:@"caption"];
+    
+    if (url !=nil){
+        [params setObject:url forKey:@"link"];
+    }
+    
+    [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"%@/feed",fbID]
+                                 parameters:params
+                                 HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                                     if (error)
+                                     {
+                                         NSLog(@"error: %@", error);
+                                     }
+                                     else
+                                     {
+                                         NSLog(@"%@",[NSString stringWithFormat:@"Successfully posted: %@ to %@",[result objectForKey:@"id"],fbID]);
+                                     }
+                                 }];
+}
+
 
 -(void)postLike :(NSString*)eid
 {
@@ -446,7 +522,7 @@ NSString *fbID = @"321024947913270";
                                          NSLog(@"%@",[NSString stringWithFormat:@"Successfully liked: %@",eid]);
                                      }
                                  }];
-
+    
     
     [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
 }
@@ -457,21 +533,20 @@ NSString *fbID = @"321024947913270";
     
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"%@/likes",eid]
                                  parameters:[NSMutableDictionary dictionary]
-                                 HTTPMethod:@"DELTE" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                                     if (error)
-                                     {
-                                         NSLog(@"error: %@", error.localizedDescription);
-                                     }
-                                     else
-                                     {
-                                         NSLog(@"%@",[NSString stringWithFormat:@"Successfully unliked: %@",eid]);
-                                     }
-                                 }];
-    
+                                 HTTPMethod:@"DELTE"
+                          completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                              if (error)
+                              {
+                                  NSLog(@"error: %@", error.localizedDescription);
+                              }
+                              else
+                              {
+                                  NSLog(@"%@",[NSString stringWithFormat:@"Successfully unliked: %@",eid]);
+                              }
+                          }];
     
     [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
 }
-
 
 -(void)sendNotification{
     NSDictionary *dataDict = [[NSMutableDictionary alloc] init];
@@ -489,4 +564,5 @@ NSString *fbID = @"321024947913270";
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"FBComplete" object:self userInfo:dataDict];
 }
+
 @end

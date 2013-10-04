@@ -12,4 +12,6 @@
 @interface EHFSplashScreen : UIViewController
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 
+-(void)retrieveFacebook;
+
 @end

@@ -22,4 +22,14 @@
 @synthesize linkURL;
 @synthesize comments;
 
+- (id) init
+{
+    if(( self = [super init] ))
+    {
+        self.comments = [[NSMutableArray alloc] init];
+    }
+    
+    return self;
+}
+
 @end

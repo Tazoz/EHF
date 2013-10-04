@@ -41,13 +41,13 @@ EHFDataStore *data;
     _txtAddress.text = [NSString stringWithFormat: @"Address:\n%@\n%@, %@\n%@, %@",[loc objectForKey:@"street"],[loc objectForKey:@"city"],[loc objectForKey:@"zip"],[loc objectForKey:@"state"],[loc objectForKey:@"country"]];
     
     _txtPhone.text = [NSString stringWithFormat:@"Phone:  %@", [data.info objectForKey:@"phone"]];
-    _txtWebsite.text = [NSString stringWithFormat:@"Webiste:\n%@", [data.info objectForKey:@"link"]];
+    _txtWebsite.text = [NSString stringWithFormat:@"Website:\n%@", [data.info objectForKey:@"link"]];
     
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:[[loc objectForKey:@"latitude"] floatValue]
                                                             longitude:[[loc objectForKey:@"longitude"] floatValue]
                                                                  zoom:15];
     
-    mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 200) camera: camera];
+    mapView_ = [GMSMapView mapWithFrame:CGRectMake(0, 100, CGRectGetWidth(self.view.bounds), 200) camera: camera];
     mapView_.myLocationEnabled = YES;
     
     GMSMarker *marker = [[GMSMarker alloc] init];

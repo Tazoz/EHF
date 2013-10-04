@@ -20,6 +20,8 @@
 -(void)sendFeedRequest;
 
 -(void)postComment :(NSString*)message :(NSString*)eid;
+-(void)postPhoto :(UIImage*)photo :(NSString*)message;
+-(void)postOnWall :(NSString*)url :(NSString*)message;
 -(void)postLike :(NSString*)eid;
 -(void)postUnlike :(NSString*)eid;
 

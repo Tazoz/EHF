@@ -40,6 +40,7 @@ EHFDataStore *data;
     }else{
     AboutInfo = [(NSString *)[data.info objectForKey:@"description"] stringByTrimmingCharactersInSet:
                            [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        self.coverPhoto.image = [data.info objectForKey:@"coverPhoto"];
     }
     
     txtAbout.text = [NSString stringWithFormat: @"%@",AboutInfo];

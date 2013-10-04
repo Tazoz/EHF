@@ -13,7 +13,7 @@
 #import "Reachability.h"
 #import "EHFPostClass.h"
 #import "EHFEntryItem.h"
-#import "EHFPost.h"
+#import "EHFViewPost.h"
 #import "EHFPhotoClass.h"
 #import "EHFVideoClass.h"
 #import "EHFAlbumClass.h"
@@ -28,6 +28,7 @@ EHFDataStore *data;
 EHFFacebookUtility *fu;
 UIRefreshControl *refreshControl;
 NSDateFormatter *formatter;
+NSString *postText;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -111,7 +112,6 @@ NSDateFormatter *formatter;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    __block EHFPost *pv;
     
     if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
         UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection" message:@"\nNo network connection to access post." delegate:self cancelButtonTitle:@"Back" otherButtonTitles:nil];
@@ -119,55 +119,114 @@ NSDateFormatter *formatter;
         
     } else {
         UIAlertView *alert;
-        [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
-        alert = [[UIAlertView alloc] initWithTitle:@"Retrieving Post From Network\nPlease Wait..." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+        alert = [[UIAlertView alloc] initWithTitle:@"Retrieving Post" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
         [alert show];
         UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);
         [indicator startAnimating];
         [alert addSubview:indicator];
         
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            
-            EHFPostClass *post = [data.posts objectAtIndex:indexPath.row];
-            pv = [self.storyboard instantiateViewControllerWithIdentifier:@"postView"];
-            
-            if(post.photo.preview == Nil)
+        
+        
+        EHFPostClass *post = [data.posts objectAtIndex:indexPath.row];
+        
+        if(post.photo.preview == Nil)
+        {
+            for(EHFAlbumClass *album in data.albums)
             {
-                for(EHFAlbumClass *album in data.albums)
+                for(EHFPhotoClass *photo in album.photos)
                 {
-                    for(EHFPhotoClass *photo in album.photos)
+                    if([photo.photoId isEqualToString:post.objectId])
                     {
-                        if([photo.photoId isEqualToString:post.objectId])
-                        {
-                            post.photo =nil;
-                            post.photo = photo;
-                            if(photo.preview == nil){
-                               
-                                post.photo.preview = [photo getImageFromURL:photo.previewURL];
-                            }
-                            break;
+                        post.photo =nil;
+                        post.photo = photo;
+                        if(photo.preview == nil){
+                            post.photo.preview = [photo getImageFromURL:photo.previewURL];
                         }
+                        break;
                     }
-                }
-                
-                if (post.photo.preview == nil)
-                {
-                    EHFPhotoClass *newPhoto = [[EHFPhotoClass alloc]init];
-                    post.photo.preview = [newPhoto getImageFromURL:post.photo.previewURL];
-                    post.photo.fullURL = post.photo.fullURL;
-                    post.photo.name = post.message;
                 }
             }
             
-            pv.post = post;
+            if (post.photo.preview == nil)
+            {
+                EHFPhotoClass *newPhoto = [[EHFPhotoClass alloc]init];
+                post.photo.preview = [newPhoto getImageFromURL:post.photo.previewURL];
+                post.photo.fullURL = post.photo.fullURL;
+                post.photo.name = post.message;
+            }
+        }
+        
+        EHFViewPost *pv = [self.storyboard instantiateViewControllerWithIdentifier:@"viewPostController"];
+        pv.post = post;
+        [alert dismissWithClickedButtonIndex:0 animated:YES];
+        if (post.photo.preview !=nil){
+            [self.navigationController pushViewController:pv animated:YES];
+        }
+    }
+}
+
+-(void)showActionSheet:(id)sender{
+    
+    UIAlertView * inputAlert = [[UIAlertView alloc] initWithTitle:@"New Event" message:@"Enter a title for the event" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    inputAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [inputAlert show];
+}
+
+
+-(void)imagePickerController: (UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [fu postPhoto:info[UIImagePickerControllerEditedImage] :postText];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)imagePickerControllerDidCancel: (UIImagePickerController *)picker
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    
+    imagePicker.delegate = self;
+    imagePicker.mediaTypes = @[(NSString *) kUTTypeImage, (NSString *) kUTTypeMovie];
+    imagePicker.allowsEditing = YES;
+    switch (buttonIndex) {
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [alert dismissWithClickedButtonIndex:0 animated:YES];
-                [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
-                [self.navigationController pushViewController:pv animated:YES];
-            });
-        });
+        case 0:
+            [fu postOnWall:nil :postText];
+            break;
+        case 1:
+            imagePicker.sourceType =
+            UIImagePickerControllerSourceTypeCamera;
+            [self presentViewController:imagePicker animated:YES completion:nil];
+            break;
+        case 2:
+            imagePicker.sourceType =
+            UIImagePickerControllerSourceTypePhotoLibrary;
+            [self presentViewController:imagePicker animated:YES completion:nil];
+            break;
+    }
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    postText = nil;
+    
+    if (buttonIndex == 1)
+    {
+        NSLog(@"Entered: %@",[[alertView textFieldAtIndex:0] text]);
+        postText = [[alertView textFieldAtIndex:0] text];
+        
+        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Select Photo To Attach"
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Cancel"
+                                             destructiveButtonTitle:nil
+                                                  otherButtonTitles:@"No Photo", @"Take New Photo", @"Existing Photo", nil];
+        
+        [sheet showInView:self.view];
     }
 }
 

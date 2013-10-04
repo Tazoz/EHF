@@ -150,7 +150,7 @@ EHFFacebookUtility *fu;
                                                                                                   // assign the photo to the album
                                                                                                   [groupToAddTo addAsset:asset];
                                                                                                   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], [data.info objectForKey:@"name"]);
-                                                                                                  [downloadButton setTitle:@"Downloaded"];
+                                                                                                  //[downloadButton setTitle:@"Downloaded"];
                                                                                                   UIAlertView *alert;
                                                                                                   
                                                                                                   alert = [[UIAlertView alloc] initWithTitle:@"Success" message:[NSString stringWithFormat:@"%@ downloaded to the %@ album",[[asset defaultRepresentation] filename], [data.info objectForKey:@"name"]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];

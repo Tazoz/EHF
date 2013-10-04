@@ -55,7 +55,7 @@
 
     UIAlertView *alert;
     
-    alert = [[UIAlertView alloc] initWithTitle:@"Enlarging Photo From Network\nPlease Wait..." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+    alert = [[UIAlertView alloc] initWithTitle:@"Enlarging Photo" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
     [alert show];
     UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);

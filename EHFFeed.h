@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
-@interface EHFFeed : UITableViewController
+@interface EHFFeed : UITableViewController <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *noFeed;
 
+-(IBAction)showActionSheet:(id)sender;
 @end

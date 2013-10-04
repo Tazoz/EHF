@@ -26,6 +26,7 @@ EHFFacebookUtility *fu;
                                              selector:@selector(goToNextView:)
                                                  name:@"FBComplete"
                                                object:nil];
+   
     
     [_spinner startAnimating];
     
@@ -39,14 +40,24 @@ EHFFacebookUtility *fu;
         
     } else {
         fu = [[EHFFacebookUtility alloc]init];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(retrieveFacebook)
+                                                     name:@"FBAuthenticated"
+                                                   object:nil];
         
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [fu authenticateFB];
-            dispatch_async(dispatch_get_main_queue(), ^{
-               [fu retrieveAll];
-            });
-        });
+        [fu authenticateFB];
+//        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+//            
+//                   dispatch_async(dispatch_get_main_queue(), ^{
+//              ;
+//            });
+//        });
     }
+}
+
+-(void)retrieveFacebook
+{
+    [fu retrieveAll];
 }
 
 

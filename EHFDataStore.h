@@ -10,14 +10,14 @@
 
 @interface EHFDataStore : NSObject
 {
-    NSDictionary *info;
+    NSMutableDictionary *info;
     NSMutableArray *albums;
     NSMutableArray *events;
     NSMutableArray *videos;
     NSMutableArray *posts;
 }
 
-@property(nonatomic,retain)NSDictionary *info;
+@property(nonatomic,retain)NSMutableDictionary *info;
 @property(nonatomic,retain)NSMutableArray *albums;
 @property(nonatomic,retain)NSMutableArray *events;
 @property(nonatomic,retain)NSMutableArray *videos;

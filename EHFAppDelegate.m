@@ -16,6 +16,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    [FBLoginView class];
+    
     [GMSServices provideAPIKey:@"AIzaSyBWgaXbHXlmGhPR0s6Ag43Kjkj6-KDMAe8"];
     [Socialize storeConsumerKey:@"62aaaf8c-402b-4844-81c4-8e57aa4de9e1"];
     [Socialize storeConsumerSecret:@"8b6a4a69-ede2-431a-a74d-41472806e2cf"];
