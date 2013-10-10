@@ -7,15 +7,19 @@
 //
 
 #import "EHFAppDelegate.h"
+#import "EHFFacebookUtility.h"
 #import <GoogleMaps/GoogleMaps.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import <Socialize/Socialize.h>
 
 @implementation EHFAppDelegate
 
+EHFFacebookUtility *fu;
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+     fu = [[EHFFacebookUtility alloc]init];
+ 
     [FBLoginView class];
     
     [GMSServices provideAPIKey:@"AIzaSyBWgaXbHXlmGhPR0s6Ag43Kjkj6-KDMAe8"];
@@ -46,6 +50,12 @@
             [navigationController pushViewController:entityLoader animated:YES];
         }
     }];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(retrieveFacebook)
+                                                 name:@"FBAuthenticated"
+                                               object:nil];
+
     return YES;
 }
 
@@ -102,6 +112,16 @@
     
     // Display the indicator as long as our static counter is > 0.
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:(NumberOfCallsToSetVisible > 0)];
+}
+
+-(void)retrieveFacebook
+{
+    [fu retrieveAll];
+}
+
+-(void)authenticateFacebook
+{
+    [fu authenticateFB];
 }
 
 @end

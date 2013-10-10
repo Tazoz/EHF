@@ -11,6 +11,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "EHFDataStore.h"
 #import "EHFPhotoClass.h"
+#import "EHFPostClass.h"
 #import "EHFFacebookUtility.h"
 #import <FacebookSDK/FacebookSDK.h>
 

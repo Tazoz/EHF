@@ -11,6 +11,8 @@
 @interface EHFAppDelegate : UIResponder <UIApplicationDelegate>
 
 - (void)setNetworkActivityIndicatorVisible:(BOOL)setVisible;
+- (void)authenticateFacebook;
+- (void)retrieveFacebook;
 
 @property (strong, nonatomic) UIWindow *window;
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "EHFSplashScreen.h"
+#import "EHFAppDelegate.h"
 #import "EHFFacebookUtility.h"
 #import "Reachability.h"
 
@@ -21,17 +22,14 @@ EHFFacebookUtility *fu;
 {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    _spinner.hidden = true;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(goToNextView:)
                                                  name:@"FBComplete"
                                                object:nil];
-   
-    
-    [_spinner startAnimating];
     
     if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
-        [_spinner stopAnimating];
         UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection"
                                                           message:@"\nYou require an internet connection for EHF to work."
                                                          delegate:self
@@ -40,31 +38,82 @@ EHFFacebookUtility *fu;
         
     } else {
         fu = [[EHFFacebookUtility alloc]init];
+               
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(retrieveFacebook)
-                                                     name:@"FBAuthenticated"
+                                                 selector:@selector(failedFBAuth)
+                                                     name:@"FBFailedAuth"
                                                    object:nil];
         
-        [fu authenticateFB];
-//        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-//            
-//                   dispatch_async(dispatch_get_main_queue(), ^{
-//              ;
-//            });
-//        });
+        [self.fbLoginButton addTarget:self
+                               action:@selector(loginButtonSelected)
+                     forControlEvents:UIControlEventTouchDown];
+        
+        [self.skipbutton addTarget:self
+                            action:@selector(retrieveNonAuth)
+                  forControlEvents:UIControlEventTouchDown];
     }
 }
 
--(void)retrieveFacebook
+-(void)loginButtonSelected
 {
-    [fu retrieveAll];
+    self.fbLoginButton.hidden = TRUE;
+    self.skipbutton.hidden=TRUE;
+    [_spinner startAnimating];
+    self.lblLoading.hidden = FALSE;
+    self.aiSpinner.hidden = FALSE;
+    
+    [(EHFAppDelegate *) [[UIApplication sharedApplication] delegate] authenticateFacebook];
 }
 
+-(void)failedFBAuth
+{
+    UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"Authentication Failed"
+                                                      message:@"\nFacebook failed to Authenticate.\nWill proceed as a non authenticated user..."
+                                                     delegate:self
+                                            cancelButtonTitle:nil otherButtonTitles: @"OK",nil];
+    [myAlert show];
+    [self retrieveNonAuth];
+}
 
-#pragma mark - View lifecycle
+-(void)retrieveNonAuth
+{
+    [_spinner startAnimating];
+    self.lblLoading.hidden = FALSE;
+    self.aiSpinner.hidden = FALSE;
+    
+    self.fbLoginButton.hidden = TRUE;
+    self.skipbutton.hidden=TRUE;
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if(![[defaults objectForKey:@"FuturePrompt"] isEqualToString: @"FALSE"]){
+        UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"Request Authentication"
+                                                          message:@"\nMany EHF features require Facebook authentication."
+                                                         delegate:self
+                                                cancelButtonTitle:@"Login Now"
+                                                otherButtonTitles:@"Only ask when required",nil];
+        [myAlert show];
+    }else{
+        [fu retrieveNonAuth];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@"FALSE" forKey:@"FBAuthenticated"];
+    
+    if (buttonIndex == [alertView cancelButtonIndex]){
+        [self loginButtonSelected];
+    }else{
+        [defaults setObject:@"FALSE" forKey:@"FuturePrompt"];
+        [self retrieveNonAuth];
+    }
+    
+    [defaults synchronize];
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
     } else {
@@ -95,13 +144,13 @@ EHFFacebookUtility *fu;
     if([pageComplete boolValue] == TRUE){
         //NSLog(@"CHECK 1");
         if([albumComplete boolValue] == TRUE || [albumError boolValue] == TRUE){
-          //  NSLog(@"CHECK 2");
+            //  NSLog(@"CHECK 2");
             if([eventComplete boolValue] == TRUE || [eventError boolValue] == TRUE){
-            //    NSLog(@"CHECK 3");
+                //    NSLog(@"CHECK 3");
                 if([videoComplete boolValue] == TRUE || [videoError boolValue] == TRUE){
-              //      NSLog(@"CHECK 4");
+                    //      NSLog(@"CHECK 4");
                     if([feedComplete boolValue] == TRUE || [feedError boolValue] == TRUE){
-                //        NSLog(@"CHECK 5");
+                        //        NSLog(@"CHECK 5");
                         [_spinner stopAnimating];
                         [self performSegueWithIdentifier:@"menuSegue" sender:self];
                     }

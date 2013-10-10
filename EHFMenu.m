@@ -6,16 +6,18 @@
 //  Copyright (c) 2013 s3147575. All rights reserved.
 //
 
+#import "EHFAppDelegate.h"
 #import "EHFMenu.h"
 #import "EHFMenuItem.h"
 #import "EHFDataStore.h"
-#import <Socialize/Socialize.h>
+
 
 @interface EHFMenu ()
 {
     NSArray *arrayOfImages;
     NSArray *arrayOfTitles;
     NSArray *arrayOfSegues;
+    NSString *segue;
 }
 
 @end
@@ -36,10 +38,9 @@ EHFDataStore *data;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-     data=[EHFDataStore getInstance];
+    data=[EHFDataStore getInstance];
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-    // [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"Logo.jpg"] forBarMetrics:UIBarMetricsDefault];
     
     [[self MenuCollectionView]setDataSource:self];
     [[self MenuCollectionView]setDelegate:self];
@@ -48,6 +49,39 @@ EHFDataStore *data;
     arrayOfTitles = [[NSArray alloc]initWithObjects:@"About Us", @"Events", @"Photos", @"Store", @"Videos", @"Social Feed", @"Live Comments", @"Contact Us", nil];
     arrayOfSegues = [[NSArray alloc]initWithObjects:@"aboutSegue", @"eventsSegue", @"albumListSegue", @"storeSegue", @"videoSegue", @"feedSegue", @"chatSegue", @"contactSegue", nil];
     
+    
+    if ([[(NSUserDefaults*) [NSUserDefaults standardUserDefaults] objectForKey:@"FBAuthenticated"] isEqualToString:@"FALSE"])
+    {
+        
+        [self.btnLogin addTarget:self
+                          action:@selector(fbLogin)
+                forControlEvents:UIControlEventTouchDown];
+    }else{
+        self.btnLogin.hidden = TRUE;
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(hideLogin)
+                                                 name:@"FBAuthenticated"
+                                               object:nil];
+}
+
+- (void)fbLogin
+{
+    UIActionSheet * action = [[UIActionSheet alloc]
+                              initWithTitle:nil
+                              delegate:self
+                              cancelButtonTitle:nil
+                              destructiveButtonTitle:@"Cancel"
+                              otherButtonTitles:@"Login to Facebook",nil];
+    
+    [action showInView:self.view];
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex{
+    if (buttonIndex == 1) {
+        [(EHFAppDelegate *) [[UIApplication sharedApplication] delegate] authenticateFacebook];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -80,34 +114,52 @@ EHFDataStore *data;
 {
     NSInteger row = indexPath.row;
     
-    NSString *segue = arrayOfSegues[row];
+    segue = arrayOfSegues[row];
+    NSArray *needAuth = [[NSArray alloc] initWithObjects:[NSNumber numberWithInteger:1], [NSNumber numberWithInteger:4], [NSNumber numberWithInteger:5], nil];
     
-    if (indexPath.row == 6)
+    if([[(NSUserDefaults*) [NSUserDefaults standardUserDefaults] objectForKey:@"FBAuthenticated"]isEqualToString:@"FALSE"] && [needAuth containsObject: [NSNumber numberWithInteger:indexPath.row]])
     {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didCreate:) name:SZDidCreateObjectsNotification object:nil];
-        SZEntity *entity = [SZEntity entityWithKey:@"EHFChat" name:[NSString stringWithFormat:@"%@ Chat",[data.info objectForKey:@"name"]]];
-        [SZCommentUtils showCommentsListWithViewController:self entity:entity completion:nil];
-        SZShareOptions *options = [SZShareUtils userShareOptions];
-        
-        options.dontShareLocation = YES;
-        
-        
+        UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"Request Authentication"
+                                                          message:@"\nFacebook authentication is required for this feature."
+                                                         delegate:self
+                                                cancelButtonTitle:@"Cancel" otherButtonTitles:@"Login now",nil];
+        [myAlert show];
     }else{
+        
+        if (indexPath.row == 6)
+        {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didCreate:) name:SZDidCreateObjectsNotification object:nil];
+            SZEntity *entity = [SZEntity entityWithKey:@"EHFChat" name:[NSString stringWithFormat:@"%@ Chat",[data.info objectForKey:@"name"]]];
+            [SZCommentUtils showCommentsListWithViewController:self entity:entity completion:nil];
+            SZShareOptions *options = [SZShareUtils userShareOptions];
+            
+            options.dontShareLocation = YES;
+            
+        }else{
+            [self performSegueWithIdentifier:segue sender:self];
+            segue = nil;
+        }
+    }
+}
+
+-(void)hideLogin
+{
+    self.btnLogin.hidden = TRUE;
+    if (segue !=nil){
         [self performSegueWithIdentifier:segue sender:self];
     }
 }
 
-- (void)didCreate:(NSNotification*)notification {
-    NSArray *comments = [[notification userInfo] objectForKey:kSZCreatedObjectsKey];
-    id<SZComment> comment = [comments lastObject];
-    if ([comment conformsToProtocol:@protocol(SZComment)]) {
-         SZEntity *entity = [SZEntity entityWithKey:@"EHFChat" name:[NSString stringWithFormat:@"%@ Chat",[data.info objectForKey:@"name"]]];
-        [SZCommentUtils getCommentsByEntity:entity success:^(NSArray *comments) {
-            NSLog(@"Fetched comments: %@", comments);
-        } failure:^(NSError *error) {
-            NSLog(@"Failed: %@", [error localizedDescription]);
-        }];
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@"FALSE" forKey:@"FBAuthenticated"];
+    
+    if (buttonIndex != [alertView cancelButtonIndex]){
+        [(EHFAppDelegate *) [[UIApplication sharedApplication] delegate] authenticateFacebook];
     }
+    
+    [defaults synchronize];
 }
 
 @end

@@ -40,7 +40,7 @@ EHFDataStore *data;
     _txtName.text = [data.info objectForKey:@"name"];
     _txtAddress.text = [NSString stringWithFormat: @"Address:\n%@\n%@, %@\n%@, %@",[loc objectForKey:@"street"],[loc objectForKey:@"city"],[loc objectForKey:@"zip"],[loc objectForKey:@"state"],[loc objectForKey:@"country"]];
     
-    _txtPhone.text = [NSString stringWithFormat:@"Phone:  %@", [data.info objectForKey:@"phone"]];
+    _txtPhone.text = [NSString stringWithFormat:@"Phone:\n%@", [data.info objectForKey:@"phone"]];
     _txtWebsite.text = [NSString stringWithFormat:@"Website:\n%@", [data.info objectForKey:@"link"]];
     
     GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:[[loc objectForKey:@"latitude"] floatValue]

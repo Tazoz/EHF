@@ -9,7 +9,10 @@
 #import "EHFViewPost.h"
 #import "EHFEntryItem.h"
 #import "EHFMessageCell.h"
-#import "EHFSocializeUtility.h"
+#import "EHFViewPhoto.h"
+#import "Reachability.h"
+#import "EHFFacebookUtility.h"
+#import <Socialize/Socialize.h>
 
 @interface EHFViewPost ()
 
@@ -34,10 +37,6 @@
     [super viewDidLoad];
     
     self.eid = [NSString stringWithFormat:@"fbPhoto%@", post.photo.photoId];
-    
-    if(post.photo.photoId ==nil){
-        self.eid = [NSString stringWithFormat:@"fbPost%@", post.postId];
-    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -50,14 +49,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
-    return [self.post.comments count]+3;
+        return [self.post.comments count]+3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -99,15 +96,14 @@
     }else if(indexPath.row == 2) {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
         
-        UIImageView *av = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 300, 58)];
-        av.backgroundColor = [UIColor clearColor];
-        av.opaque = NO;
-        av.image = self.post.photo.preview;
-        cell.backgroundView = av;
-        
-        //EHFSocializeUtility *su = [[EHFSocializeUtility alloc]init];
-        //[cell addSubview:[su generateActionBar:eid :post.message :@"post" :post.linkURL :self]];
-        
+        if (post.photo != nil)
+        {
+            UIImageView *av = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 300, 58)];
+            av.backgroundColor = [UIColor clearColor];
+            av.opaque = NO;
+            av.image = self.post.photo.preview;
+            cell.backgroundView = av;
+        }
         return cell;
         
     }else{
@@ -124,7 +120,7 @@
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];;
         [formatter setDateFormat:@"dd MMM 'at' HH:mm"];
         
-        UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 280, 88)];
+        UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(10, 30, 280, 88)];
         lbl.backgroundColor = [UIColor blackColor];
         lbl.textColor = [UIColor whiteColor];
         [cell addSubview:lbl];
@@ -134,17 +130,18 @@
         lbl.preferredMaxLayoutWidth = 280;
         
         [lbl sizeToFit];
-
+        
         cell.primaryDetail.text = comment.name;
         cell.secondaryDetail.text = [NSString stringWithFormat:@"%@", [formatter stringFromDate:date]];
-        
+        tableView.separatorColor = [UIColor whiteColor];
         return cell;
     }
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat height = tableView.rowHeight;
-    if (indexPath.row == 1){
+    if (indexPath.row == 1 )
+    {
         UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 280, 88)];
         lbl.text = self.post.message;
         lbl.numberOfLines = 0;
@@ -162,9 +159,78 @@
         }else{
             height = 350;
         }
-        
-        
+    }else if(indexPath.row > 2)
+    {
+        EHFPostClass *comment = [self.post.comments objectAtIndex:indexPath.row - 3];
+        UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 280, 88)];
+        lbl.text = comment.message;
+        lbl.numberOfLines = 0;
+        lbl.preferredMaxLayoutWidth = 280;
+        CGRect labelFrame = lbl.frame;
+        labelFrame.size = [lbl.text sizeWithFont:lbl.font
+                               constrainedToSize:CGSizeMake(lbl.frame.size.width, CGFLOAT_MAX)
+                                   lineBreakMode:lbl.lineBreakMode];
+        height = labelFrame.size.height +50;
     }
     return height;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if(indexPath.row ==2)
+    {
+        if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+            UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection"
+                                                              message:@"\nNo network connection to access photo."
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Back" otherButtonTitles:nil];
+            [myAlert show];
+            
+        } else {
+            
+            UIAlertView *alert;
+            
+            alert = [[UIAlertView alloc] initWithTitle:@"Enlarging Photo" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+            [alert show];
+            UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+            indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);
+            [indicator startAnimating];
+            [alert addSubview:indicator];
+            
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                
+                EHFPhotoClass *photo = self.post.photo;
+                
+                EHFViewPhoto *photoView = [self.storyboard instantiateViewControllerWithIdentifier:@"PhotoView"];
+                photoView.photo = photo;
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [alert dismissWithClickedButtonIndex:0 animated:YES];
+                    [self.navigationController pushViewController:photoView animated:YES];
+                });
+            });
+        }
+    }else if(indexPath.row >2)
+    {
+        EHFPostClass *comment = [self.post.comments objectAtIndex:indexPath.row -3];
+        EHFViewPost *cv = [self.storyboard instantiateViewControllerWithIdentifier:@"viewPostController"];
+        cv.post = comment;
+        [self.navigationController pushViewController:cv animated:YES];
+    }
+}
+
+-(void)postComment:(id)sender{
+    
+        [SZCommentUtils showCommentComposerWithViewController:self
+                                                       entity:[SZEntity
+                                                               entityWithKey:self.post.postId
+                                                               name:self.post.name]
+                                                   completion:^(id<SZComment> comment) {
+                                                       EHFFacebookUtility *fu;
+                                                       fu = [[EHFFacebookUtility alloc]init];
+                                                       [fu postComment:[comment text] :self.post.postId];
+            NSLog(@"Created comment: %@", [comment text]);
+        } cancellation:^{
+            NSLog(@"Cancelled comment create");
+        }];
 }
 @end

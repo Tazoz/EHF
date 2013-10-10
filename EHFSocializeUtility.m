@@ -45,7 +45,6 @@ EHFFacebookUtility *fu;
         {
             self.likeButton = [[SZLikeButton alloc] initWithFrame:CGRectMake(120, 30, 0, 0) entity:self.entity viewController:sender];
             
-            //self.actionBar = [SZActionBarUtils showActionBarWithViewController:self entity:self.entity options:nil];
             self.actionBar = [SZActionBar defaultActionBarWithFrame:CGRectNull entity:self.entity viewController:sender];
             
             SZActionButton *shareButton = [SZActionButton actionButtonWithIcon:[UIImage imageNamed:@"action-bar-icon-share.png"] title:@"Share"];
@@ -81,19 +80,11 @@ EHFFacebookUtility *fu;
                         
                     } else if (network == SZSocialNetworkFacebook) {
                         
-                        if ([type isEqualToString:@"photo"])
-                        {
-                            [postData.params setObject:[NSString stringWithFormat:@"https://www.facebook.com/photo.php?fbid=%@",fbid] forKey:@"link"];
-                        }
-                        
-                        if ([type isEqualToString:@"post"])
-                        {
-                            [postData.params setObject:[NSString stringWithFormat:@"https://www.facebook.com/%@",[fbid stringByReplacingOccurrencesOfString:@"_" withString:@"/posts/"]] forKey:@"link"];
-                        }
-                        
                         if ([type isEqualToString:@"event"])
                         {
                             [postData.params setObject:[NSString stringWithFormat:@"https://www.facebook.com/events/%@",fbid] forKey:@"link"];
+                        }else{
+                            [postData.params setObject:[NSString stringWithFormat:@"https://www.facebook.com/photo.php?fbid=%@",fbid] forKey:@"link"];
                         }
                     }
                 };
@@ -113,60 +104,67 @@ EHFFacebookUtility *fu;
                 }];
             };
             
-            if([type isEqualToString:@"photo"])
+            if(![type isEqualToString:@"event"])
             {
                 SZActionButton *downloadButton = [SZActionButton actionButtonWithIcon:nil title:@"Download"];
                 downloadButton.actionBlock = ^(SZActionButton *button, SZActionBar *bar) {
-                        EHFPhotoClass *photo = object;
-                        //UIImageWriteToSavedPhotosAlbum(photo.full, self, nil, nil);
-                        
-                        library = [[ALAssetsLibrary alloc] init];
-                        
-                        [library writeImageToSavedPhotosAlbum:photo.full.CGImage orientation:(ALAssetOrientation)photo.full.imageOrientation
-                                              completionBlock:^(NSURL* assetURL, NSError* error) {
+                    EHFPhotoClass *photo;
+                    
+                    if ([type isEqualToString:@"photo"])
+                    {
+                        photo = object;
+                    }else{
+                        EHFPostClass *post = object;
+                        photo = post.photo;
+                    }
+                    
+                    library = [[ALAssetsLibrary alloc] init];
+                    
+                    [library writeImageToSavedPhotosAlbum:photo.full.CGImage orientation:(ALAssetOrientation)photo.full.imageOrientation
+                                          completionBlock:^(NSURL* assetURL, NSError* error) {
+                                              
+                                              if (error!=nil) {
+                                                  NSLog(@"Failed to save photo:\nError: %@", [error localizedDescription]);
+                                                  return;
+                                              }else{
                                                   
-                                                  if (error!=nil) {
-                                                      NSLog(@"Failed to save photo:\nError: %@", [error localizedDescription]);
-                                                      return;
-                                                  }else{
-                                                      
-                                                      [library addAssetsGroupAlbumWithName:[data.info objectForKey:@"name"]
-                                                                               resultBlock:^(ALAssetsGroup *group) {
-                                                                                   
-                                                                               }
-                                                                              failureBlock:^(NSError* error) {
-                                                                                  NSLog(@"Failed to create album:\nError: %@", [error localizedDescription]);
-                                                                              }];
-                                                      
-                                                      __block ALAssetsGroup* groupToAddTo;
-                                                      [library enumerateGroupsWithTypes:ALAssetsGroupAlbum
-                                                                             usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                                                                                 if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:[data.info objectForKey:@"name"]]) {
-                                                                                     NSLog(@"Found album %@", [data.info objectForKey:@"name"]);
-                                                                                     groupToAddTo = group;
-                                                                                     
-                                                                                     [library assetForURL:assetURL
-                                                                                              resultBlock:^(ALAsset *asset) {
-                                                                                                  // assign the photo to the album
-                                                                                                  [groupToAddTo addAsset:asset];
-                                                                                                  NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], [data.info objectForKey:@"name"]);
-                                                                                                  //[downloadButton setTitle:@"Downloaded"];
-                                                                                                  UIAlertView *alert;
-                                                                                                  
-                                                                                                  alert = [[UIAlertView alloc] initWithTitle:@"Success" message:[NSString stringWithFormat:@"%@ downloaded to the %@ album",[[asset defaultRepresentation] filename], [data.info objectForKey:@"name"]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                                                                                                  [alert show];
-                                                                                                  
-                                                                                              }
-                                                                                             failureBlock:^(NSError* error) {
-                                                                                                 NSLog(@"Failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
-                                                                                             }];
-                                                                                 }
+                                                  [library addAssetsGroupAlbumWithName:[data.info objectForKey:@"name"]
+                                                                           resultBlock:^(ALAssetsGroup *group) {
+                                                                               
+                                                                           }
+                                                                          failureBlock:^(NSError* error) {
+                                                                              NSLog(@"Failed to create album:\nError: %@", [error localizedDescription]);
+                                                                          }];
+                                                  
+                                                  __block ALAssetsGroup* groupToAddTo;
+                                                  [library enumerateGroupsWithTypes:ALAssetsGroupAlbum
+                                                                         usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                                                                             if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:[data.info objectForKey:@"name"]]) {
+                                                                                 NSLog(@"Found album %@", [data.info objectForKey:@"name"]);
+                                                                                 groupToAddTo = group;
+                                                                                 
+                                                                                 [library assetForURL:assetURL
+                                                                                          resultBlock:^(ALAsset *asset) {
+                                                                                              // assign the photo to the album
+                                                                                              [groupToAddTo addAsset:asset];
+                                                                                              NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], [data.info objectForKey:@"name"]);
+                                                                                              //                                                                                                  [downloadButton setTitle:@"Downloaded"];
+                                                                                              UIAlertView *alert;
+                                                                                              
+                                                                                              alert = [[UIAlertView alloc] initWithTitle:@"Success" message:[NSString stringWithFormat:@"%@ downloaded to the %@ album",[[asset defaultRepresentation] filename], [data.info objectForKey:@"name"]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                                                                                              [alert show];
+                                                                                              
+                                                                                          }
+                                                                                         failureBlock:^(NSError* error) {
+                                                                                             NSLog(@"Failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+                                                                                         }];
                                                                              }
-                                                                           failureBlock:^(NSError* error) {
-                                                                               NSLog(@"Failed to enumerate albums:\nError: %@", [error localizedDescription]);
-                                                                           }];
-                                                  };
-                                              }];
+                                                                         }
+                                                                       failureBlock:^(NSError* error) {
+                                                                           NSLog(@"Failed to enumerate albums:\nError: %@", [error localizedDescription]);
+                                                                       }];
+                                              };
+                                          }];
                 };
                 self.actionBar.itemsRight = [NSArray arrayWithObjects:downloadButton, self.likeButton, [SZActionButton commentButton], shareButton, nil];
                 

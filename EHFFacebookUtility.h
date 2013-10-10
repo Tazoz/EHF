@@ -7,12 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Socialize/Socialize.h>
 #import "EHFAlbumClass.h"
 
 @interface EHFFacebookUtility : NSObject
 
 -(void)authenticateFB;
 -(void)retrieveAll;
+-(void)retrieveNonAuth;
 -(void)sendPageRequest;
 -(void)sendAlbumsRequest;
 -(void)sendEventsRequest;

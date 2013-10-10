@@ -69,7 +69,6 @@
     EHFViewPhoto *photoView = [self.storyboard instantiateViewControllerWithIdentifier:@"PhotoView"];
     photoView.photo = photo;
     
-        
         dispatch_async(dispatch_get_main_queue(), ^{
             [alert dismissWithClickedButtonIndex:0 animated:YES];
             [self.navigationController pushViewController:photoView animated:YES];

@@ -17,6 +17,7 @@
 #import "EHFPhotoClass.h"
 #import "EHFVideoClass.h"
 #import "EHFAlbumClass.h"
+#import <Socialize/Socialize.h>
 
 @interface EHFFeed ()
 
@@ -29,6 +30,7 @@ EHFFacebookUtility *fu;
 UIRefreshControl *refreshControl;
 NSDateFormatter *formatter;
 NSString *postText;
+UIAlertView *alert;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -118,6 +120,7 @@ NSString *postText;
         [myAlert show];
         
     } else {
+        
         UIAlertView *alert;
         alert = [[UIAlertView alloc] initWithTitle:@"Retrieving Post" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
         [alert show];
@@ -126,58 +129,101 @@ NSString *postText;
         [indicator startAnimating];
         [alert addSubview:indicator];
         
-        
-        
-        EHFPostClass *post = [data.posts objectAtIndex:indexPath.row];
-        
-        if(post.photo.preview == Nil)
-        {
-            for(EHFAlbumClass *album in data.albums)
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            EHFPostClass *post = [data.posts objectAtIndex:indexPath.row];
+            
+            if(post.photo.preview == nil && post.photo.photoId !=nil)
             {
-                for(EHFPhotoClass *photo in album.photos)
+                for(EHFAlbumClass *album in data.albums)
                 {
-                    if([photo.photoId isEqualToString:post.objectId])
+                    for(EHFPhotoClass *photo in album.photos)
                     {
-                        post.photo =nil;
-                        post.photo = photo;
-                        if(photo.preview == nil){
-                            post.photo.preview = [photo getImageFromURL:photo.previewURL];
+                        if([photo.photoId isEqualToString:post.objectId])
+                        {
+                            post.photo =nil;
+                            post.photo = photo;
+                            if(photo.preview == nil){
+                                post.photo.preview = [photo getImageFromURL:photo.previewURL];
+                            }
+                            [alert dismissWithClickedButtonIndex:0 animated:YES];
+                            break;
                         }
-                        break;
                     }
                 }
+                
+                if (post.photo.preview == nil)
+                {
+                    EHFPhotoClass *newPhoto = [[EHFPhotoClass alloc]init];
+                    post.photo.preview = [newPhoto getImageFromURL:post.photo.previewURL];
+                    post.photo.fullURL = post.photo.fullURL;
+                    post.photo.name = post.message;
+                }
             }
-            
-            if (post.photo.preview == nil)
-            {
-                EHFPhotoClass *newPhoto = [[EHFPhotoClass alloc]init];
-                post.photo.preview = [newPhoto getImageFromURL:post.photo.previewURL];
-                post.photo.fullURL = post.photo.fullURL;
-                post.photo.name = post.message;
+            EHFViewPost *pv = [self.storyboard instantiateViewControllerWithIdentifier:@"viewPostController"];
+            pv.post = post;
+            [alert dismissWithClickedButtonIndex:0 animated:YES];
+            if (post.photo.preview !=nil || post.photo.photoId == nil){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.navigationController pushViewController:pv animated:YES];
+                });
             }
-        }
-        
-        EHFViewPost *pv = [self.storyboard instantiateViewControllerWithIdentifier:@"viewPostController"];
-        pv.post = post;
-        [alert dismissWithClickedButtonIndex:0 animated:YES];
-        if (post.photo.preview !=nil){
-            [self.navigationController pushViewController:pv animated:YES];
-        }
+        });
     }
 }
 
 -(void)showActionSheet:(id)sender{
     
-    UIAlertView * inputAlert = [[UIAlertView alloc] initWithTitle:@"New Event" message:@"Enter a title for the event" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
-    inputAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
-    [inputAlert show];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Select Photo To Attach"
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                         destructiveButtonTitle:nil
+                                              otherButtonTitles:@"No Photo", @"Take New Photo", @"Existing Photo", nil];
+    
+    [sheet showInView:self.view];
+
+    SZCommentOptions *options = [SZCommentUtils userCommentOptions];
+    options.dontShareLocation = TRUE;
+    
+    
 }
 
 
 -(void)imagePickerController: (UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    [fu postPhoto:info[UIImagePickerControllerEditedImage] :postText];
-    [self dismissViewControllerAnimated:YES completion:nil];
+     [self dismissViewControllerAnimated:YES completion:nil];
+    
+    [SZCommentUtils showCommentComposerWithViewController:self
+                                                   entity:[SZEntity
+                                                           entityWithKey:[NSString stringWithFormat:@"New post on %@ Facebook page at %@", [data.info objectForKey:@"name"], [NSDate date]]
+                                                           name:[data.info objectForKey:@"name"]]
+                                               completion:^(id<SZComment> newPost) {
+                                                   postText = [newPost text];
+                                                   [fu postPhoto:info[UIImagePickerControllerEditedImage] :postText];
+                                               } cancellation:^{
+                                                   NSLog(@"Cancelled comment create");
+                                               }];
+    
+//    alert = [[UIAlertView alloc] initWithTitle:@"Posting Photo" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+//    [alert show];
+//    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//    indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);
+//    [indicator startAnimating];
+//    [alert addSubview:indicator];
+
+    [self refreshPostsList];
+}
+
+-(void)postComplete
+{
+    [alert setTitle:@"Success"];
+    [alert setMessage:[NSString stringWithFormat:@"Successfully posted to the %@ Facebook page", [data.info objectForKey:@"name"]]];
+    sleep(3);
+    [self performSelector:@selector(dismissAlert) withObject:nil afterDelay:2];
+}
+
+-(void)dismissAlert
+{
+    [alert dismissWithClickedButtonIndex:0 animated:TRUE];
 }
 
 -(void)imagePickerControllerDidCancel: (UIImagePickerController *)picker
@@ -187,6 +233,12 @@ NSString *postText;
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(postComplete)
+                                                 name:@"FBPostComplete"
+                                               object:nil];
+    
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
     
     imagePicker.delegate = self;
@@ -195,6 +247,8 @@ NSString *postText;
     switch (buttonIndex) {
             
         case 0:
+            alert = [[UIAlertView alloc] initWithTitle:@"Posting" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+            [alert show];
             [fu postOnWall:nil :postText];
             break;
         case 1:
@@ -207,26 +261,6 @@ NSString *postText;
             UIImagePickerControllerSourceTypePhotoLibrary;
             [self presentViewController:imagePicker animated:YES completion:nil];
             break;
-    }
-    
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    postText = nil;
-    
-    if (buttonIndex == 1)
-    {
-        NSLog(@"Entered: %@",[[alertView textFieldAtIndex:0] text]);
-        postText = [[alertView textFieldAtIndex:0] text];
-        
-        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Select Photo To Attach"
-                                                           delegate:self
-                                                  cancelButtonTitle:@"Cancel"
-                                             destructiveButtonTitle:nil
-                                                  otherButtonTitles:@"No Photo", @"Take New Photo", @"Existing Photo", nil];
-        
-        [sheet showInView:self.view];
     }
 }
 

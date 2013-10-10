@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Socialize/Socialize.h>
 
-@interface EHFMenu : UICollectionViewController<UICollectionViewDataSource, UICollectionViewDelegate>
+@interface EHFMenu : UICollectionViewController<UICollectionViewDataSource, UICollectionViewDelegate, UIActionSheetDelegate>
+
 @property (strong, nonatomic) IBOutlet UICollectionView *MenuCollectionView;
+@property (weak, nonatomic) IBOutlet UIButton *btnLogin;
 
 @end

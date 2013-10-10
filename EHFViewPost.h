@@ -14,4 +14,5 @@
 @property (strong, nonatomic) EHFPostClass *post;
 @property (strong, nonatomic) NSString *eid;
 
+-(IBAction)postComment:(id)sender;
 @end

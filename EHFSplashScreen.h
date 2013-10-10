@@ -11,7 +11,9 @@
 
 @interface EHFSplashScreen : UIViewController
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
-
--(void)retrieveFacebook;
+@property (weak, nonatomic) IBOutlet UIButton *fbLoginButton;
+@property (weak, nonatomic) IBOutlet UIButton *skipbutton;
+@property (weak, nonatomic) IBOutlet UILabel *lblLoading;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *aiSpinner;
 
 @end
