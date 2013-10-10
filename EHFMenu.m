@@ -46,7 +46,7 @@ EHFDataStore *data;
     [[self MenuCollectionView]setDelegate:self];
     
     arrayOfImages = [[NSArray alloc]initWithObjects:@"about.png", @"events.png", @"photos.png", @"store.png", @"videos.png", @"feed.png", @"chat.png", @"contact.png", nil];
-    arrayOfTitles = [[NSArray alloc]initWithObjects:@"About Us", @"Events", @"Photos", @"Store", @"Videos", @"Social Feed", @"Live Comments", @"Contact Us", nil];
+    arrayOfTitles = [[NSArray alloc]initWithObjects:@"About Us", @"Events", @"Photos", @"Store", @"Videos", @"Social Feed", @"Live Forum", @"Contact Us", nil];
     arrayOfSegues = [[NSArray alloc]initWithObjects:@"aboutSegue", @"eventsSegue", @"albumListSegue", @"storeSegue", @"videoSegue", @"feedSegue", @"chatSegue", @"contactSegue", nil];
     
     

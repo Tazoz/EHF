@@ -53,15 +53,16 @@ NSString *fbID = @"321024947913270";
 }
 
 
--(void)printError: (NSError*)errormsg {
+-(void)printError: (NSError*)errormsg
+{
     NSLog(@"Error: %@", errormsg);
     NSLog(@"Error code: %d", errormsg.code);
     NSLog(@"Error message: %@", errormsg.localizedDescription);
 }
 
--(void)authenticateFB{
+-(void)authenticateFB
+{
     // Attempt to open the session. If the session is not open, show the user the Facebook login UX
-    
     [FBSession openActiveSessionWithReadPermissions:@[@"basic_info"] allowLoginUI:true completionHandler:^(FBSession *session,
                                                                                                            FBSessionState status,
                                                                                                            NSError *error)
@@ -100,7 +101,8 @@ NSString *fbID = @"321024947913270";
      }];
 }
 
--(void)retrieveAll{
+-(void)retrieveAll
+{
     [self sendPageRequest];
     [self sendAlbumsRequest];
     [self sendVideoRequest];
@@ -108,7 +110,8 @@ NSString *fbID = @"321024947913270";
     [self sendFeedRequest];
 }
 
--(void)retrieveNonAuth{
+-(void)retrieveNonAuth
+{
     eventError = TRUE;
     videoError = TRUE;
     feedError = TRUE;
@@ -117,7 +120,8 @@ NSString *fbID = @"321024947913270";
     
 }
 
-- (void)sendPageRequest{
+- (void)sendPageRequest
+{
     [FBRequestConnection startWithGraphPath:fbID
                           completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                               
@@ -142,7 +146,8 @@ NSString *fbID = @"321024947913270";
                           }];
 }
 
-- (void)sendAlbumsRequest{
+- (void)sendAlbumsRequest
+{
     [FBRequestConnection startWithGraphPath:[fbID stringByAppendingString:@"/albums?fields=cover_photo,id,name"]
                           completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                               
@@ -152,13 +157,13 @@ NSString *fbID = @"321024947913270";
                                   [self sendNotification];
                                   return;
                               }
+                              
                               expectedAlbums = (NSInteger)[(NSMutableArray*)[result data] count];
                               NSLog(@"You have %d album(s)", [(NSMutableArray*)[result data] count]);
                               
                               if(expectedAlbums>0){
                                   [data.albums removeAllObjects];
                               }
-                              
                               for (NSDictionary* albumDict in (NSMutableArray*)[result data])
                               {
                                   EHFAlbumClass *newAlbum = [[EHFAlbumClass alloc] init];
@@ -167,14 +172,12 @@ NSString *fbID = @"321024947913270";
                                                             
                                                             if(error) {
                                                                 [self printError: error];
-                                                                
                                                                 return;
                                                             }
                                                             newAlbum.cover = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@", [(NSDictionary *)result objectForKey:@"picture"]]]]];
                                                             newAlbum.name = [albumDict objectForKey:@"name"];
                                                             newAlbum.albumId = [albumDict objectForKey:@"id"];
                                                             [data.albums addObject:newAlbum];
-                                                            
                                                             
                                                             if([data.albums count] == expectedAlbums){
                                                                 albumComplete = TRUE;
@@ -190,10 +193,8 @@ NSString *fbID = @"321024947913270";
                                                         completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                                                             if(error) {
                                                                 [self printError: error];
-                                                                
                                                                 return;
                                                             }
-                                                            
                                                             for (NSDictionary* photoDict in (NSMutableArray*)[result data])
                                                             {
                                                                 EHFPhotoClass *newPhoto = [[EHFPhotoClass alloc]init];
@@ -218,7 +219,8 @@ NSString *fbID = @"321024947913270";
                           }];
 }
 
-- (void)sendEventsRequest{
+- (void)sendEventsRequest
+{
     [FBRequestConnection startWithGraphPath:[fbID stringByAppendingString:@"/events?fields=description,end_time,id,location,name,start_time,venue,picture"]
                           completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                               if(error) {
@@ -266,7 +268,8 @@ NSString *fbID = @"321024947913270";
 }
 
 
--(void)sendVideoRequest{
+-(void)sendVideoRequest
+{
     [FBRequestConnection startWithGraphPath:[fbID stringByAppendingString:@"/videos"]
                           completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                               if(error) {
@@ -291,7 +294,8 @@ NSString *fbID = @"321024947913270";
     [self sendNotification];
 }
 
--(void)sendFeedRequest{
+-(void)sendFeedRequest
+{
     [FBRequestConnection startWithGraphPath:[fbID stringByAppendingString:@"/feed?fields=from,message,picture,object_id,type,link&limit=10000"]
                           completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                               if(error) {
@@ -338,7 +342,6 @@ NSString *fbID = @"321024947913270";
                                       [FBRequestConnection startWithGraphPath:[newPost.postId stringByAppendingString:@"?fields=comments.fields(created_time,message,from)"]
                                                             completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                                                                 if(error) {
-                                                                    
                                                                     return;
                                                                 }
                                                                 expectedComments = 0;
@@ -394,10 +397,8 @@ NSString *fbID = @"321024947913270";
                                                             NSError *error) {
                                             // Handle new permissions callback
                                         }];
-
     NSMutableDictionary *params = [[NSMutableDictionary alloc]init];
     [params setObject:message forKey:@"message"];
-    
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"%@/comments",eid]
                                  parameters:params
                                  HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -428,6 +429,7 @@ NSString *fbID = @"321024947913270";
              [[NSNotificationCenter defaultCenter] postNotificationName:@"FBPostComplete" object:self userInfo:nil];
          }
      }
+     
             batchEntryName:@"photopost"
      ];
     
@@ -454,7 +456,6 @@ NSString *fbID = @"321024947913270";
                                                             NSError *error) {
                                             // Handle new permissions callback
                                         }];
-    
     NSMutableDictionary *params = [[NSMutableDictionary alloc]init];
     [params setObject:message forKey:@"message"];
     [params setObject:[NSString stringWithFormat:@"Posted using the %@ iPhone App",[data.info objectForKey:@"name"]] forKey:@"description"];
@@ -465,7 +466,6 @@ NSString *fbID = @"321024947913270";
     if (url !=nil){
         [params setObject:url forKey:@"link"];
     }
-    
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"%@/feed",fbID]
                                  parameters:params
                                  HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {

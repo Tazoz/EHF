@@ -91,7 +91,7 @@ EHFFacebookUtility *fu;
                                                           message:@"\nMany EHF features require Facebook authentication."
                                                          delegate:self
                                                 cancelButtonTitle:@"Login Now"
-                                                otherButtonTitles:@"Only ask when required",nil];
+                                                otherButtonTitles:@"Ask when required",nil];
         [myAlert show];
     }else{
         [fu retrieveNonAuth];

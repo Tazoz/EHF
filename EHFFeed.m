@@ -180,7 +180,7 @@ UIAlertView *alert;
                                               otherButtonTitles:@"No Photo", @"Take New Photo", @"Existing Photo", nil];
     
     [sheet showInView:self.view];
-
+    
     SZCommentOptions *options = [SZCommentUtils userCommentOptions];
     options.dontShareLocation = TRUE;
     
@@ -190,27 +190,35 @@ UIAlertView *alert;
 
 -(void)imagePickerController: (UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-     [self dismissViewControllerAnimated:YES completion:nil];
-    
+    UIImage *photo;
+    if (info !=nil){
+        photo = info[UIImagePickerControllerEditedImage];
+        [self dismissViewControllerAnimated:YES completion:^{
+            [self addPostText :photo];
+        }];
+    }else{
+            [self addPostText :nil];
+    }
+}
+
+-(void)addPostText :(UIImage*)photo
+{
     [SZCommentUtils showCommentComposerWithViewController:self
                                                    entity:[SZEntity
                                                            entityWithKey:[NSString stringWithFormat:@"New post on %@ Facebook page at %@", [data.info objectForKey:@"name"], [NSDate date]]
                                                            name:[data.info objectForKey:@"name"]]
                                                completion:^(id<SZComment> newPost) {
-                                                   postText = [newPost text];
-                                                   [fu postPhoto:info[UIImagePickerControllerEditedImage] :postText];
+                                                   
+                                                   if (photo ==nil)
+                                                   {
+                                                       [fu postOnWall:nil :[newPost text]];
+                                                   }else{
+                                                       [fu postPhoto:photo :[newPost text]];
+                                                   }
+                                                   
                                                } cancellation:^{
                                                    NSLog(@"Cancelled comment create");
                                                }];
-    
-//    alert = [[UIAlertView alloc] initWithTitle:@"Posting Photo" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-//    [alert show];
-//    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//    indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);
-//    [indicator startAnimating];
-//    [alert addSubview:indicator];
-
-    [self refreshPostsList];
 }
 
 -(void)postComplete
@@ -242,14 +250,12 @@ UIAlertView *alert;
     UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
     
     imagePicker.delegate = self;
-    imagePicker.mediaTypes = @[(NSString *) kUTTypeImage, (NSString *) kUTTypeMovie];
+    imagePicker.mediaTypes = @[(NSString *) kUTTypeImage];
     imagePicker.allowsEditing = YES;
     switch (buttonIndex) {
             
         case 0:
-            alert = [[UIAlertView alloc] initWithTitle:@"Posting" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-            [alert show];
-            [fu postOnWall:nil :postText];
+            [self imagePickerController:nil didFinishPickingMediaWithInfo:nil];
             break;
         case 1:
             imagePicker.sourceType =
