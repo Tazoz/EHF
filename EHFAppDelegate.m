@@ -40,14 +40,7 @@ EHFFacebookUtility *fu;
     // Specify a Socialize entity loader block
     [Socialize setEntityLoaderBlock:^(UINavigationController *navigationController, id<SocializeEntity>entity) {
         
-        SampleEntityLoader *entityLoader = [[SampleEntityLoader alloc] initWithEntity:entity];
-        
-        if (navigationController == nil) {
-            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:entityLoader];
-            [self.window.rootViewController presentModalViewController:navigationController animated:YES];
-        } else {
-            [navigationController pushViewController:entityLoader animated:YES];
-        }
+        [self entityLoader:navigationController :entity];
     }];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -126,6 +119,18 @@ EHFFacebookUtility *fu;
 -(void)authenticateFacebook
 {
     [fu authenticateFB];
+}
+
+-(void) entityLoader :(UINavigationController*) navigationController :(id<SocializeEntity>)entity
+{
+//    SampleEntityLoader *entityLoader = [[SampleEntityLoader alloc] initWithEntity:entity];
+//    
+//    if (navigationController == nil) {
+//        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:entityLoader];
+//        [self.window.rootViewController presentModalViewController:navigationController animated:YES];
+//    } else {
+//        [navigationController pushViewController:entityLoader animated:YES];
+//    }
 }
 
 @end
