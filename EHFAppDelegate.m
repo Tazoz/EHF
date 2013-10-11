@@ -18,8 +18,8 @@ EHFFacebookUtility *fu;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-     fu = [[EHFFacebookUtility alloc]init];
- 
+    fu = [[EHFFacebookUtility alloc]init];
+    
     [FBLoginView class];
     
     [GMSServices provideAPIKey:@"AIzaSyBWgaXbHXlmGhPR0s6Ag43Kjkj6-KDMAe8"];
@@ -45,7 +45,6 @@ EHFFacebookUtility *fu;
         if (navigationController == nil) {
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:entityLoader];
             [self.window.rootViewController presentModalViewController:navigationController animated:YES];
-        
         } else {
             [navigationController pushViewController:entityLoader animated:YES];
         }
@@ -55,7 +54,6 @@ EHFFacebookUtility *fu;
                                              selector:@selector(retrieveFacebook)
                                                  name:@"FBAuthenticated"
                                                object:nil];
-
     return YES;
 }
 
@@ -116,7 +114,13 @@ EHFFacebookUtility *fu;
 
 -(void)retrieveFacebook
 {
-    [fu retrieveAll];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if(![[defaults objectForKey:@"NonAuthAccess"] isEqualToString: @"TRUE"]){
+        [fu retrieveAll];
+    }else{
+        [fu addAuth];
+    }
 }
 
 -(void)authenticateFacebook

@@ -73,8 +73,6 @@ NSDateFormatter *formatter;
     
 }
 
-#pragma mark - Table view data source
-
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
@@ -117,7 +115,6 @@ NSDateFormatter *formatter;
         
     } else {
         UIAlertView *alert;
-        [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
         alert = [[UIAlertView alloc] initWithTitle:@"Retrieving Photos" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
         [alert show];
         UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
@@ -133,7 +130,6 @@ NSDateFormatter *formatter;
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [alert dismissWithClickedButtonIndex:0 animated:YES];
-                [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
                 [self.navigationController pushViewController:pc animated:YES];
             });
         });

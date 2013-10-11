@@ -145,7 +145,6 @@ UIAlertView *alert;
                             if(photo.preview == nil){
                                 post.photo.preview = [photo getImageFromURL:photo.previewURL];
                             }
-                            [alert dismissWithClickedButtonIndex:0 animated:YES];
                             break;
                         }
                     }
@@ -161,9 +160,9 @@ UIAlertView *alert;
             }
             EHFViewPost *pv = [self.storyboard instantiateViewControllerWithIdentifier:@"viewPostController"];
             pv.post = post;
-            [alert dismissWithClickedButtonIndex:0 animated:YES];
             if (post.photo.preview !=nil || post.photo.photoId == nil){
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    [alert dismissWithClickedButtonIndex:0 animated:YES];
                     [self.navigationController pushViewController:pv animated:YES];
                 });
             }
@@ -197,7 +196,7 @@ UIAlertView *alert;
             [self addPostText :photo];
         }];
     }else{
-            [self addPostText :nil];
+        [self addPostText :nil];
     }
 }
 

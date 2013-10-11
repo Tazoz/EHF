@@ -15,6 +15,7 @@
 -(void)authenticateFB;
 -(void)retrieveAll;
 -(void)retrieveNonAuth;
+-(void)addAuth;
 -(void)sendPageRequest;
 -(void)sendAlbumsRequest;
 -(void)sendEventsRequest;

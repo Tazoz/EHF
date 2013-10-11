@@ -25,6 +25,7 @@
 @implementation EHFMenu
 
 EHFDataStore *data;
+UIAlertView *alert;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -62,7 +63,7 @@ EHFDataStore *data;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(hideLogin)
-                                                 name:@"FBAuthenticated"
+                                                 name:@"FBComplete"
                                                object:nil];
 }
 
@@ -80,7 +81,7 @@ EHFDataStore *data;
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex{
     if (buttonIndex == 1) {
-        [(EHFAppDelegate *) [[UIApplication sharedApplication] delegate] authenticateFacebook];
+        [self notifyFBLogin];
     }
 }
 
@@ -145,21 +146,35 @@ EHFDataStore *data;
 -(void)hideLogin
 {
     self.btnLogin.hidden = TRUE;
+    [alert dismissWithClickedButtonIndex:0 animated:TRUE];
+    
     if (segue !=nil){
         [self performSegueWithIdentifier:segue sender:self];
+        segue = nil;
     }
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@"FALSE" forKey:@"FBAuthenticated"];
     
     if (buttonIndex != [alertView cancelButtonIndex]){
-        [(EHFAppDelegate *) [[UIApplication sharedApplication] delegate] authenticateFacebook];
+        [self notifyFBLogin];
     }
-    
     [defaults synchronize];
+}
+
+-(void)notifyFBLogin
+{
+    [(EHFAppDelegate *) [[UIApplication sharedApplication] delegate] authenticateFacebook];
+    
+    alert = [[UIAlertView alloc] initWithTitle:@"Logging into Facebook" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+    [alert show];
+    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);
+    [indicator startAnimating];
+    [alert addSubview:indicator];
 }
 
 @end

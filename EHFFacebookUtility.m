@@ -60,6 +60,39 @@ NSString *fbID = @"321024947913270";
     NSLog(@"Error message: %@", errormsg.localizedDescription);
 }
 
+-(void)retrieveAll
+{
+    [self sendPageRequest];
+    [self sendAlbumsRequest];
+    [self sendVideoRequest];
+    [self sendEventsRequest];
+    [self sendFeedRequest];
+}
+
+-(void)retrieveNonAuth
+{
+    eventError = TRUE;
+    videoError = TRUE;
+    feedError = TRUE;
+    
+    [self sendPageRequest];
+    [self sendAlbumsRequest];
+    
+}
+
+-(void)addAuth
+{
+    pageComplete = TRUE;
+    albumComplete = TRUE;
+    eventError = FALSE;
+    videoError = FALSE;
+    feedError = FALSE;
+    
+    [self sendVideoRequest];
+    [self sendEventsRequest];
+    [self sendFeedRequest];
+}
+
 -(void)authenticateFB
 {
     // Attempt to open the session. If the session is not open, show the user the Facebook login UX
@@ -87,6 +120,7 @@ NSString *fbID = @"321024947913270";
              
              [defaults setObject:@"TRUE" forKey:@"FBAuthenticated"];
              [defaults setObject:@"TRUE" forKey:@"FuturePrompt"];
+             [defaults setObject:@"FALSE" forKey:@"NonAuthAccess"];
              [defaults synchronize];
              
              NSString *existingToken =  [session accessTokenData].accessToken;
@@ -99,25 +133,6 @@ NSString *fbID = @"321024947913270";
              }];
          }
      }];
-}
-
--(void)retrieveAll
-{
-    [self sendPageRequest];
-    [self sendAlbumsRequest];
-    [self sendVideoRequest];
-    [self sendEventsRequest];
-    [self sendFeedRequest];
-}
-
--(void)retrieveNonAuth
-{
-    eventError = TRUE;
-    videoError = TRUE;
-    feedError = TRUE;
-    [self sendPageRequest];
-    [self sendAlbumsRequest];
-    
 }
 
 - (void)sendPageRequest
@@ -182,10 +197,6 @@ NSString *fbID = @"321024947913270";
                                                             if([data.albums count] == expectedAlbums){
                                                                 albumComplete = TRUE;
                                                                 [self sendNotification];
-                                                            }else{
-                                                                albumComplete = TRUE;
-                                                                [self sendNotification];
-                                                                return;
                                                             }
                                                             
                                                         }];
@@ -517,20 +528,25 @@ NSString *fbID = @"321024947913270";
 }
 
 -(void)sendNotification{
-    NSDictionary *dataDict = [[NSMutableDictionary alloc] init];
-    [dataDict setValue:[NSNumber numberWithBool:pageComplete] forKey:@"pageComplete"];
-    [dataDict setValue:[NSNumber numberWithBool:albumComplete] forKey:@"albumComplete"];
-    [dataDict setValue:[NSNumber numberWithBool:eventComplete] forKey:@"eventComplete"];
-    [dataDict setValue:[NSNumber numberWithBool:videoComplete] forKey:@"videoComplete"];
-    [dataDict setValue:[NSNumber numberWithBool:feedComplete] forKey:@"feedComplete"];
     
-    [dataDict setValue:[NSNumber numberWithBool:pageError] forKey:@"pageError"];
-    [dataDict setValue:[NSNumber numberWithBool:albumError] forKey:@"albumError"];
-    [dataDict setValue:[NSNumber numberWithBool:eventError] forKey:@"eventError"];
-    [dataDict setValue:[NSNumber numberWithBool:videoError] forKey:@"videoError"];
-    [dataDict setValue:[NSNumber numberWithBool:feedError] forKey:@"feedError"];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FBComplete" object:self userInfo:dataDict];
+    if(albumComplete == TRUE || albumError == TRUE)
+    {
+        if(eventComplete == TRUE || eventError == TRUE)
+        {
+            if(videoComplete == TRUE || videoError == TRUE)
+            {
+                if(feedComplete == TRUE || feedError == TRUE)
+                {
+                    if(pageComplete == TRUE)
+                    {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"FBComplete" object:self userInfo:nil];
+                    }else if (pageError == TRUE){
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"FBFailedContent" object:self userInfo:nil];
+                    }
+                }
+            }
+        }
+    }
 }
 
 @end

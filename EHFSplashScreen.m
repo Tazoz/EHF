@@ -44,6 +44,11 @@ EHFFacebookUtility *fu;
                                                      name:@"FBFailedAuth"
                                                    object:nil];
         
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(failedContent)
+                                                     name:@"FBFailedContent"
+                                                   object:nil];
+        
         [self.fbLoginButton addTarget:self
                                action:@selector(loginButtonSelected)
                      forControlEvents:UIControlEventTouchDown];
@@ -107,6 +112,7 @@ EHFFacebookUtility *fu;
         [self loginButtonSelected];
     }else{
         [defaults setObject:@"FALSE" forKey:@"FuturePrompt"];
+        [defaults setObject:@"TRUE" forKey:@"NonAuthAccess"];
         [self retrieveNonAuth];
     }
     
@@ -128,48 +134,18 @@ EHFFacebookUtility *fu;
 
 - (void)goToNextView:(NSNotification *)status
 {
-    NSDictionary *dataDict = [status userInfo];
-    NSNumber* pageComplete = [dataDict objectForKey:@"pageComplete"];
-    NSNumber* albumComplete = [dataDict objectForKey:@"albumComplete"];
-    NSNumber* eventComplete = [dataDict objectForKey:@"eventComplete"];
-    NSNumber* videoComplete = [dataDict objectForKey:@"videoComplete"];
-    NSNumber* feedComplete = [dataDict objectForKey:@"feedComplete"];
-    
-    NSNumber* pageError = [dataDict objectForKey:@"pageError"];
-    NSNumber* albumError = [dataDict objectForKey:@"albumError"];
-    NSNumber* eventError = [dataDict objectForKey:@"eventError"];
-    NSNumber* videoError = [dataDict objectForKey:@"videoError"];
-    NSNumber* feedError = [dataDict objectForKey:@"feedError"];
-    
-    if([pageComplete boolValue] == TRUE){
-        //NSLog(@"CHECK 1");
-        if([albumComplete boolValue] == TRUE || [albumError boolValue] == TRUE){
-            //  NSLog(@"CHECK 2");
-            if([eventComplete boolValue] == TRUE || [eventError boolValue] == TRUE){
-                //    NSLog(@"CHECK 3");
-                if([videoComplete boolValue] == TRUE || [videoError boolValue] == TRUE){
-                    //      NSLog(@"CHECK 4");
-                    if([feedComplete boolValue] == TRUE || [feedError boolValue] == TRUE){
-                        //        NSLog(@"CHECK 5");
-                        [_spinner stopAnimating];
-                        [self performSegueWithIdentifier:@"menuSegue" sender:self];
-                    }
-                    
-                }
-            }
-            
-        }
-    }else{
-        
-        if([pageError boolValue] == TRUE){
+    [_spinner stopAnimating];
+    [self performSegueWithIdentifier:@"menuSegue" sender:self];
+}
+
+-(void)failedContent
+{
             [_spinner stopAnimating];
             UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"Information Inaccessible"
                                                               message:@"\nInformation required for this app is inaccessible.\nPlease try again later."
                                                              delegate:self
-                                                    cancelButtonTitle:nil otherButtonTitles:nil];
+                                                    cancelButtonTitle:nil otherButtonTitles:@"Retry", nil];
             [myAlert show];
-        }
-    }
 }
 
 
