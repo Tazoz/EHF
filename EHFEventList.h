@@ -11,5 +11,4 @@
 @interface EHFEventList : UITableViewController
 @property (weak, nonatomic) IBOutlet UILabel *noEvent;
 
-
 @end

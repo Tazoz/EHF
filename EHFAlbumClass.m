@@ -22,7 +22,6 @@
     {
         self.photos = [[NSMutableArray alloc] init];
     }
-    
     return self;
 }
 @end

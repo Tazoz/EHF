@@ -28,9 +28,6 @@ NSDateFormatter *formatter;
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
-    if (self) {
-        
-    }
     return self;
 }
 
@@ -40,7 +37,8 @@ NSDateFormatter *formatter;
     
     data=[EHFDataStore getInstance];
     
-    if([data.events count] !=0){
+    if([data.events count] !=0)
+    {
         _noEvent.hidden = YES;
     }
     
@@ -52,7 +50,8 @@ NSDateFormatter *formatter;
     self.refreshControl = refreshControl;
 }
 
--(void)refreshEventList{
+-(void)refreshEventList
+{
     [formatter setDateFormat:@"MMM d, HH:mm"];
     refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]]];
     
@@ -63,7 +62,8 @@ NSDateFormatter *formatter;
     [fu sendEventsRequest];
 }
 
--(void)reloadTableValues{
+-(void)reloadTableValues
+{
     [self.tableView reloadData];
     [refreshControl endRefreshing];
 }
@@ -71,10 +71,7 @@ NSDateFormatter *formatter;
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    
 }
-
-#pragma mark - Table view data source
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -90,7 +87,8 @@ NSDateFormatter *formatter;
 {
     static NSString *cellID = @"cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
-    if (cell == nil) {
+    if (cell == nil)
+    {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID];
     }
     
@@ -116,7 +114,8 @@ NSDateFormatter *formatter;
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     __block EHFEvent *ec;
     
     EHFEventClass *event = [data.events objectAtIndex:indexPath.row];

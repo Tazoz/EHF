@@ -148,12 +148,11 @@ EHFFacebookUtility *fu;
                                                                                               // assign the photo to the album
                                                                                               [groupToAddTo addAsset:asset];
                                                                                               NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], [data.info objectForKey:@"name"]);
-                                                                                              //                                                                                                  [downloadButton setTitle:@"Downloaded"];
+                                                                                              //[downloadButton setTitle:@"Downloaded"];
                                                                                               UIAlertView *alert;
                                                                                               
                                                                                               alert = [[UIAlertView alloc] initWithTitle:@"Success" message:[NSString stringWithFormat:@"%@ downloaded to the %@ album",[[asset defaultRepresentation] filename], [data.info objectForKey:@"name"]] delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
                                                                                               [alert show];
-                                                                                              
                                                                                           }
                                                                                          failureBlock:^(NSError* error) {
                                                                                              NSLog(@"Failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
@@ -167,10 +166,8 @@ EHFFacebookUtility *fu;
                                           }];
                 };
                 self.actionBar.itemsRight = [NSArray arrayWithObjects:downloadButton, self.likeButton, [SZActionButton commentButton], shareButton, nil];
-                
             }else{
                 self.actionBar.itemsRight = [NSArray arrayWithObjects:self.likeButton, [SZActionButton commentButton], shareButton, nil];
-                
             }
             self.actionBar.itemsLeft = [NSArray arrayWithObjects:[SZActionButton viewsButton], nil];
         }

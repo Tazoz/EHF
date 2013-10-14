@@ -11,7 +11,6 @@
 
 @implementation EHFPostClass
 
-
 @synthesize postId;
 @synthesize name;
 @synthesize created;
@@ -28,7 +27,6 @@
     {
         self.comments = [[NSMutableArray alloc] init];
     }
-    
     return self;
 }
 

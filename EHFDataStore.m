@@ -22,7 +22,6 @@ static EHFDataStore *instance =nil;
     {
         if(instance==nil)
         {
-            
             instance= [[EHFDataStore alloc] init];
         }
     }
@@ -38,7 +37,6 @@ static EHFDataStore *instance =nil;
         self.videos = [[NSMutableArray alloc] init];
         self.posts = [[NSMutableArray alloc] init];
     }
-    
     return self;
 }
 

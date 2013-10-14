@@ -18,6 +18,8 @@
 @implementation EHFSplashScreen
 
 EHFFacebookUtility *fu;
+UIAlertView *failedContent;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -38,7 +40,7 @@ EHFFacebookUtility *fu;
         
     } else {
         fu = [[EHFFacebookUtility alloc]init];
-               
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(failedFBAuth)
                                                      name:@"FBFailedAuth"
@@ -91,7 +93,8 @@ EHFFacebookUtility *fu;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    if(![[defaults objectForKey:@"FuturePrompt"] isEqualToString: @"FALSE"]){
+    if(![[defaults objectForKey:@"FuturePrompt"] isEqualToString: @"FALSE"])
+    {
         UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"Request Authentication"
                                                           message:@"\nMany EHF features require Facebook authentication."
                                                          delegate:self
@@ -103,12 +106,13 @@ EHFFacebookUtility *fu;
     }
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@"FALSE" forKey:@"FBAuthenticated"];
     
-    if (buttonIndex == [alertView cancelButtonIndex]){
+    if (buttonIndex == [alertView cancelButtonIndex])
+    {
         [self loginButtonSelected];
     }else{
         [defaults setObject:@"FALSE" forKey:@"FuturePrompt"];
@@ -119,14 +123,6 @@ EHFFacebookUtility *fu;
     [defaults synchronize];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-    } else {
-        return YES;
-    }
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -135,17 +131,24 @@ EHFFacebookUtility *fu;
 - (void)goToNextView:(NSNotification *)status
 {
     [_spinner stopAnimating];
+    [failedContent dismissWithClickedButtonIndex:0 animated:YES];
+    
     [self performSegueWithIdentifier:@"menuSegue" sender:self];
 }
 
 -(void)failedContent
 {
-            [_spinner stopAnimating];
-            UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"Information Inaccessible"
-                                                              message:@"\nInformation required for this app is inaccessible.\nPlease try again later."
-                                                             delegate:self
-                                                    cancelButtonTitle:nil otherButtonTitles:@"Retry", nil];
-            [myAlert show];
+    [_spinner stopAnimating];
+    
+    [failedContent dismissWithClickedButtonIndex:0 animated:YES];
+    
+    failedContent = [[UIAlertView alloc] initWithTitle:@"Information Inaccessible"
+                                               message:@"\nInformation required for this app is inaccessible.\nPlease try again later."
+                                              delegate:self
+                                     cancelButtonTitle:nil otherButtonTitles:@"Retry", nil];
+    
+    [failedContent show];
+    [_spinner startAnimating];
 }
 
 

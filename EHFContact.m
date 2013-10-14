@@ -16,17 +16,14 @@
 
 EHFDataStore *data;
 
-@implementation EHFContact{
+@implementation EHFContact
+{
     GMSMapView *mapView_;
-    
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        
-    }
     return self;
 }
 

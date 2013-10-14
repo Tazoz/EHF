@@ -28,9 +28,6 @@ NSDateFormatter *formatter;
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
-    if (self) {
-        
-    }
     return self;
 }
 
@@ -52,7 +49,8 @@ NSDateFormatter *formatter;
     self.refreshControl = refreshControl;
 }
 
--(void)refreshAlbumList{
+-(void)refreshAlbumList
+{
     [formatter setDateFormat:@"MMM d, HH:mm"];
     refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]]];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -62,7 +60,8 @@ NSDateFormatter *formatter;
     [fu sendAlbumsRequest];
 }
 
--(void)reloadTableValues{
+-(void)reloadTableValues
+{
     [self.tableView reloadData];
     [refreshControl endRefreshing];
 }
@@ -87,7 +86,8 @@ NSDateFormatter *formatter;
 {
     static NSString *cellID = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
-    if (cell == nil) {
+    if (cell == nil)
+    {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID];
     }
     
@@ -109,7 +109,8 @@ NSDateFormatter *formatter;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     __block EHFPhotoCollection *pc;
     
-    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable)
+    {
         UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection" message:@"\nNo network connection to access photos." delegate:self cancelButtonTitle:@"Back" otherButtonTitles:nil];
         [myAlert show];
         

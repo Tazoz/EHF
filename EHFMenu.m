@@ -30,9 +30,6 @@ UIAlertView *alert;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        
-    }
     return self;
 }
 
@@ -69,6 +66,7 @@ UIAlertView *alert;
 
 - (void)fbLogin
 {
+    segue = nil;
     UIActionSheet * action = [[UIActionSheet alloc]
                               initWithTitle:nil
                               delegate:self
@@ -79,7 +77,8 @@ UIAlertView *alert;
     [action showInView:self.view];
 }
 
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex{
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex
+{
     if (buttonIndex == 1) {
         [self notifyFBLogin];
     }
@@ -148,7 +147,8 @@ UIAlertView *alert;
     self.btnLogin.hidden = TRUE;
     [alert dismissWithClickedButtonIndex:0 animated:TRUE];
     
-    if (segue !=nil){
+    if (segue !=nil)
+    {
         [self performSegueWithIdentifier:segue sender:self];
         segue = nil;
     }
@@ -159,7 +159,8 @@ UIAlertView *alert;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@"FALSE" forKey:@"FBAuthenticated"];
     
-    if (buttonIndex != [alertView cancelButtonIndex]){
+    if (buttonIndex != [alertView cancelButtonIndex])
+    {
         [self notifyFBLogin];
     }
     [defaults synchronize];

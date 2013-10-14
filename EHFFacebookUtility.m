@@ -369,7 +369,6 @@ NSString *fbID = @"321024947913270";
                                                                     return;
                                                                 }
                                                                 
-                                                                
                                                                 for (NSDictionary* commentDict in data)
                                                                 {
                                                                     if ([commentDict objectForKey:@"message"] != Nil){
@@ -416,9 +415,7 @@ NSString *fbID = @"321024947913270";
                                      if (error)
                                      {
                                          NSLog(@"error: %@", error);
-                                     }
-                                     else
-                                     {
+                                     }else{
                                          NSLog(@"%@",[NSString stringWithFormat:@"Successfully posted: %@ to %@",message,eid]);
                                      }
                                  }];
@@ -436,11 +433,11 @@ NSString *fbID = @"321024947913270";
     [connection addRequest:request1
          completionHandler:
      ^(FBRequestConnection *connection, id result, NSError *error) {
-         if (!error) {
+         if (!error)
+         {
              [[NSNotificationCenter defaultCenter] postNotificationName:@"FBPostComplete" object:self userInfo:nil];
          }
      }
-     
             batchEntryName:@"photopost"
      ];
     
@@ -493,7 +490,6 @@ NSString *fbID = @"321024947913270";
                                  }];
 }
 
-
 -(void)postLike :(NSString*)eid
 {
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"%@/likes",eid]
@@ -502,9 +498,7 @@ NSString *fbID = @"321024947913270";
                                      if (error)
                                      {
                                          NSLog(@"error: %@", error.localizedDescription);
-                                     }
-                                     else
-                                     {
+                                     }else{
                                          NSLog(@"%@",[NSString stringWithFormat:@"Successfully liked: %@",eid]);
                                      }
                                  }];
@@ -519,16 +513,14 @@ NSString *fbID = @"321024947913270";
                               if (error)
                               {
                                   NSLog(@"error: %@", error.localizedDescription);
-                              }
-                              else
-                              {
+                              }else{
                                   NSLog(@"%@",[NSString stringWithFormat:@"Successfully unliked: %@",eid]);
                               }
                           }];
 }
 
--(void)sendNotification{
-    
+-(void)sendNotification
+{    
     if(albumComplete == TRUE || albumError == TRUE)
     {
         if(eventComplete == TRUE || eventError == TRUE)

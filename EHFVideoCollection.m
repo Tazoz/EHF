@@ -46,7 +46,8 @@ EHFDataStore *data;
     EHFMediaItem *mItem = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     EHFVideoClass *video = data.videos[indexPath.row];
     
-    if(video.preview == Nil){
+    if(video.preview == Nil)
+    {
         UIImage *preview = [video getImageFromURL:video.previewURL];
         video.preview = preview;
     }
@@ -58,7 +59,6 @@ EHFDataStore *data;
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     EHFVideoClass *video = data.videos[indexPath.row];
     
     MPMoviePlayerController *moviePlayer=[[MPMoviePlayerController alloc] initWithContentURL:[[NSURL alloc] initWithString:video.videoURL]];

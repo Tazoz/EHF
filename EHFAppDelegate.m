@@ -34,10 +34,8 @@ EHFFacebookUtility *fu;
     // Handle Socialize notification at launch
     NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (userInfo != nil) {
-        //        [self handleNotification:userInfo];
     }
     
-    // Specify a Socialize entity loader block
     [Socialize setEntityLoaderBlock:^(UINavigationController *navigationController, id<SocializeEntity>entity) {
         
         [self entityLoader:navigationController :entity];
@@ -78,14 +76,13 @@ EHFFacebookUtility *fu;
     [[FBSession activeSession] close];
 }
 
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    //[[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    //[[NSNotificationCenter defaultCenter] postNotificationName:OPEN_URL object:url];
-    //return [FBSession.activeSession handleOpenURL:url];
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
     return [Socialize handleOpenURL:url];
 }
 
@@ -123,14 +120,7 @@ EHFFacebookUtility *fu;
 
 -(void) entityLoader :(UINavigationController*) navigationController :(id<SocializeEntity>)entity
 {
-//    SampleEntityLoader *entityLoader = [[SampleEntityLoader alloc] initWithEntity:entity];
-//    
-//    if (navigationController == nil) {
-//        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:entityLoader];
-//        [self.window.rootViewController presentModalViewController:navigationController animated:YES];
-//    } else {
-//        [navigationController pushViewController:entityLoader animated:YES];
-//    }
+
 }
 
 @end

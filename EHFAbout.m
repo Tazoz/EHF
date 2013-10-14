@@ -22,9 +22,6 @@ EHFDataStore *data;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        
-    }
     return self;
 }
 
@@ -33,16 +30,19 @@ EHFDataStore *data;
     [super viewDidLoad];
     data=[EHFDataStore getInstance];
     NSString *AboutInfo;
-    
-    if([data.info objectForKey:@"about"] == NULL){
-        AboutInfo = [NSString stringWithFormat: @"%@ has not supplied any about information." , (NSString *)[data.info objectForKey:@"name"]];
-        
+    if ([data.info objectForKey:@"name"] !=nil)
+    {
+        if([data.info objectForKey:@"about"] == nil)
+        {
+            AboutInfo = [NSString stringWithFormat: @"%@ has not supplied any about information." , (NSString *)[data.info objectForKey:@"name"]];
+        }else{
+            AboutInfo = [(NSString *)[data.info objectForKey:@"description"] stringByTrimmingCharactersInSet:
+                         [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            self.coverPhoto.image = [data.info objectForKey:@"coverPhoto"];
+        }
     }else{
-    AboutInfo = [(NSString *)[data.info objectForKey:@"description"] stringByTrimmingCharactersInSet:
-                           [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        self.coverPhoto.image = [data.info objectForKey:@"coverPhoto"];
+        AboutInfo = [NSString stringWithFormat: @"No 'About Us' information supplied."];
     }
-    
     txtAbout.text = [NSString stringWithFormat: @"%@",AboutInfo];
 }
 

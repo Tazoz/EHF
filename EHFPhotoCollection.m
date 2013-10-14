@@ -32,7 +32,8 @@
     EHFMediaItem *mItem = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     EHFPhotoClass *photo = self.album.photos[indexPath.row];
     
-    if(photo.preview == Nil){
+    if(photo.preview == Nil)
+    {
         UIImage *downloadedphoto = [photo getImageFromURL:photo.previewURL];
         photo.preview = downloadedphoto;
     }
@@ -44,36 +45,35 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable)
+    {
         UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection"
                                                           message:@"\nNo network connection to access photo."
                                                          delegate:self
                                                 cancelButtonTitle:@"Back" otherButtonTitles:nil];
         [myAlert show];
-        
     } else {
-
-    UIAlertView *alert;
-    
-    alert = [[UIAlertView alloc] initWithTitle:@"Enlarging Photo" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
-    [alert show];
-    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);
-    [indicator startAnimating];
-    [alert addSubview:indicator];
-    
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        UIAlertView *alert;
         
-    EHFPhotoClass *photo = self.album.photos[indexPath.row];
-    
-    EHFViewPhoto *photoView = [self.storyboard instantiateViewControllerWithIdentifier:@"PhotoView"];
-    photoView.photo = photo;
-    
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [alert dismissWithClickedButtonIndex:0 animated:YES];
-            [self.navigationController pushViewController:photoView animated:YES];
+        alert = [[UIAlertView alloc] initWithTitle:@"Enlarging Photo" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+        [alert show];
+        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        indicator.center = CGPointMake(alert.bounds.size.width / 2, alert.bounds.size.height - 50);
+        [indicator startAnimating];
+        [alert addSubview:indicator];
+        
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            
+            EHFPhotoClass *photo = self.album.photos[indexPath.row];
+            
+            EHFViewPhoto *photoView = [self.storyboard instantiateViewControllerWithIdentifier:@"PhotoView"];
+            photoView.photo = photo;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [alert dismissWithClickedButtonIndex:0 animated:YES];
+                [self.navigationController pushViewController:photoView animated:YES];
+            });
         });
-    });
     }
 }
 @end

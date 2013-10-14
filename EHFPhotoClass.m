@@ -19,10 +19,11 @@
 @synthesize full;
 
 
--(UIImage *) getImageFromURL :(NSString *) url{
-                                  [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
+-(UIImage *) getImageFromURL :(NSString *) url
+{
+    [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:YES];
     UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:url]]];
-                                  [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
+    [(EHFAppDelegate *)[[UIApplication sharedApplication] delegate] setNetworkActivityIndicatorVisible:NO];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"PhotoDownloaded" object:self userInfo:nil];
     return image;
 }

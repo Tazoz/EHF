@@ -35,9 +35,6 @@ UIAlertView *alert;
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
-    if (self) {
-        
-    }
     return self;
 }
 
@@ -47,7 +44,8 @@ UIAlertView *alert;
     
     data=[EHFDataStore getInstance];
     
-    if([data.posts count] !=0){
+    if([data.posts count] !=0)
+    {
         _noFeed.hidden = YES;
     }
     
@@ -69,7 +67,8 @@ UIAlertView *alert;
     [fu sendFeedRequest];
 }
 
--(void)reloadTableValues{
+-(void)reloadTableValues
+{
     [self.tableView reloadData];
     [refreshControl endRefreshing];
 }
@@ -77,10 +76,7 @@ UIAlertView *alert;
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    
 }
-
-#pragma mark - Table view data source
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -95,7 +91,8 @@ UIAlertView *alert;
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     EHFEntryItem *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    if (cell == nil) {
+    if (cell == nil)
+    {
         cell = [[EHFEntryItem alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     }
     
@@ -113,14 +110,12 @@ UIAlertView *alert;
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
         UIAlertView *myAlert = [[UIAlertView alloc] initWithTitle:@"No Internet Connection" message:@"\nNo network connection to access post." delegate:self cancelButtonTitle:@"Back" otherButtonTitles:nil];
         [myAlert show];
-        
     } else {
-        
         UIAlertView *alert;
         alert = [[UIAlertView alloc] initWithTitle:@"Retrieving Post" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
         [alert show];
@@ -142,7 +137,8 @@ UIAlertView *alert;
                         {
                             post.photo =nil;
                             post.photo = photo;
-                            if(photo.preview == nil){
+                            if(photo.preview == nil)
+                            {
                                 post.photo.preview = [photo getImageFromURL:photo.previewURL];
                             }
                             break;
@@ -160,7 +156,8 @@ UIAlertView *alert;
             }
             EHFViewPost *pv = [self.storyboard instantiateViewControllerWithIdentifier:@"viewPostController"];
             pv.post = post;
-            if (post.photo.preview !=nil || post.photo.photoId == nil){
+            if (post.photo.preview !=nil || post.photo.photoId == nil)
+            {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [alert dismissWithClickedButtonIndex:0 animated:YES];
                     [self.navigationController pushViewController:pv animated:YES];
@@ -170,27 +167,24 @@ UIAlertView *alert;
     }
 }
 
--(void)showActionSheet:(id)sender{
-    
+-(void)showActionSheet:(id)sender
+{
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Select Photo To Attach"
                                                        delegate:self
                                               cancelButtonTitle:@"Cancel"
                                          destructiveButtonTitle:nil
                                               otherButtonTitles:@"No Photo", @"Take New Photo", @"Existing Photo", nil];
-    
     [sheet showInView:self.view];
     
     SZCommentOptions *options = [SZCommentUtils userCommentOptions];
     options.dontShareLocation = TRUE;
-    
-    
 }
-
 
 -(void)imagePickerController: (UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     UIImage *photo;
-    if (info !=nil){
+    if (info !=nil)
+    {
         photo = info[UIImagePickerControllerEditedImage];
         [self dismissViewControllerAnimated:YES completion:^{
             [self addPostText :photo];
@@ -204,8 +198,8 @@ UIAlertView *alert;
 {
     [SZCommentUtils showCommentComposerWithViewController:self
                                                    entity:[SZEntity
-                                                           entityWithKey:[NSString stringWithFormat:@"New post on %@ Facebook page at %@", [data.info objectForKey:@"name"], [NSDate date]]
-                                                           name:[data.info objectForKey:@"name"]]
+                                                           entityWithKey:[NSString stringWithFormat:@"Posted at %@", [NSDate date]]
+                                                           name:[NSString stringWithFormat:@"%@ Facebook page post", [data.info objectForKey:@"name"]]]
                                                completion:^(id<SZComment> newPost) {
                                                    
                                                    if (photo ==nil)
@@ -214,7 +208,6 @@ UIAlertView *alert;
                                                    }else{
                                                        [fu postPhoto:photo :[newPost text]];
                                                    }
-                                                   
                                                } cancellation:^{
                                                    NSLog(@"Cancelled comment create");
                                                }];
@@ -240,7 +233,6 @@ UIAlertView *alert;
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(postComplete)
                                                  name:@"FBPostComplete"
@@ -251,8 +243,8 @@ UIAlertView *alert;
     imagePicker.delegate = self;
     imagePicker.mediaTypes = @[(NSString *) kUTTypeImage];
     imagePicker.allowsEditing = YES;
-    switch (buttonIndex) {
-            
+    switch (buttonIndex)
+    {
         case 0:
             [self imagePickerController:nil didFinishPickingMediaWithInfo:nil];
             break;

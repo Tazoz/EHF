@@ -26,26 +26,19 @@
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
     return self;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     self.eid = [NSString stringWithFormat:@"fbPhoto%@", post.photo.photoId];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
-
-#pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -59,10 +52,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    if(indexPath.row == 0){
+    if(indexPath.row == 0)
+    {
         EHFEntryItem *cell = [tableView dequeueReusableCellWithIdentifier:@"PostDetails"];
-        if (cell == nil) {
+        if (cell == nil)
+        {
             cell = [[EHFEntryItem alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"PostDetails"];
         }
         
@@ -77,7 +71,8 @@
         return cell;
     }else if(indexPath.row == 1) {
         EHFMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PostMessage"];
-        if (cell == nil) {
+        if (cell == nil)
+        {
             cell = [[EHFMessageCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"PostMessage"];
         }
         
@@ -108,7 +103,8 @@
         
     }else{
         EHFEntryItem *cell = [tableView dequeueReusableCellWithIdentifier:@"CommentDetails"];
-        if (cell == nil) {
+        if (cell == nil)
+        {
             cell = [[EHFEntryItem alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"CommentDetails"];
         }
         
@@ -137,6 +133,7 @@
         return cell;
     }
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat height = tableView.rowHeight;
@@ -175,7 +172,8 @@
     return height;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if(indexPath.row ==2)
     {
         if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
@@ -184,9 +182,7 @@
                                                              delegate:self
                                                     cancelButtonTitle:@"Back" otherButtonTitles:nil];
             [myAlert show];
-            
         } else {
-            
             UIAlertView *alert;
             
             alert = [[UIAlertView alloc] initWithTitle:@"Enlarging Photo" message:@"Please Wait..." delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
@@ -218,8 +214,8 @@
     }
 }
 
--(void)postComment:(id)sender{
-    
+-(void)postComment:(id)sender
+{    
         [SZCommentUtils showCommentComposerWithViewController:self
                                                        entity:[SZEntity
                                                                entityWithKey:self.post.postId
