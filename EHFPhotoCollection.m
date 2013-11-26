@@ -16,6 +16,10 @@
 @implementation EHFPhotoCollection
 @synthesize album;
 
+-(void)viewWillAppear {
+    [super viewWillAppear:YES];
+    [self.collectionView reloadData];
+}
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
@@ -32,14 +36,25 @@
     EHFMediaItem *mItem = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     EHFPhotoClass *photo = self.album.photos[indexPath.row];
     
-    if(photo.preview == Nil)
-    {
-        UIImage *downloadedphoto = [photo getImageFromURL:photo.previewURL];
-        photo.preview = downloadedphoto;
-    }
-    
     mItem.photo = photo;
     [mItem.image setImage: photo.preview];
+    
+    if(photo.preview == [UIImage imageNamed:@"Logo.jpg"])
+    {
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+        dispatch_async(queue, ^{
+            UIImage *image;
+            
+            image = [UIImage imageWithData:[NSData dataWithContentsOfURL:
+                                            [NSURL URLWithString:photo.previewURL]]];
+            
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                photo.preview = image;
+                [mItem.image setImage: image];
+                [mItem setNeedsLayout];
+            });
+        });
+    }
     return mItem;
 }
 

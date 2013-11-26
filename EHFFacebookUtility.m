@@ -218,7 +218,7 @@ NSString *fbID = @"321024947913270";
                                                                 newPhoto.photoId = [photoDict objectForKey:@"id"];
                                                                 newPhoto.previewURL = [photoDict objectForKey:@"picture"];
                                                                 newPhoto.fullURL = [photoDict objectForKey:@"source"];
-                                                                
+                                                                newPhoto.preview = [UIImage imageNamed:@"Logo.jpg"];
                                                                 
                                                                 [newAlbum.photos addObject:newPhoto];
                                                                 
