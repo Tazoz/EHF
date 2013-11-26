@@ -128,7 +128,6 @@ UIAlertView *alert;
         
         if (indexPath.row == 6)
         {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didCreate:) name:SZDidCreateObjectsNotification object:nil];
             SZEntity *entity = [SZEntity entityWithKey:@"EHFChat" name:[NSString stringWithFormat:@"%@ Chat",[data.info objectForKey:@"name"]]];
             [SZCommentUtils showCommentsListWithViewController:self entity:entity completion:nil];
             SZShareOptions *options = [SZShareUtils userShareOptions];

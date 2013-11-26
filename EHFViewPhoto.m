@@ -37,10 +37,6 @@ EHFDataStore *data;
     }
     
     self.navigationItem.title = photo.name;
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture)];
-    tapGesture.numberOfTapsRequired=1;
-    [PhotoView setUserInteractionEnabled:YES];
-    [PhotoView addGestureRecognizer:tapGesture];
     PhotoView.image = photo.full;
 }
 
@@ -49,16 +45,6 @@ EHFDataStore *data;
     [super viewWillAppear:animated];
     EHFSocializeUtility *su = [[EHFSocializeUtility alloc]init];
     [self.view addSubview:[su generateActionBar:[NSString stringWithFormat:@"fbPhoto%@", photo.photoId] :photo.name :@"photo" :photo :self]];
-}
-
--(void)handleTapGesture
-{
-    if(self.navigationController.navigationBar.hidden)
-    {
-        [[self navigationController] setNavigationBarHidden:NO animated:NO];
-    }else{
-        [[self navigationController] setNavigationBarHidden:YES animated:NO];
-    }
 }
 
 - (void)didReceiveMemoryWarning
